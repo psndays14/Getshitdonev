@@ -1,7 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://zafbat.ma/sitemap.xml
-
-# ZAF BAT - Maîtrise d'Ouvrage Villa au Maroc
-# Casablanca · Rabat · Salé · Marrakech · Tanger
