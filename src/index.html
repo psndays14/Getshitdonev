@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ZAF BAT OS — V1</title>
+    <title>ZAF BAT OS — V1 local-first</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -13,51 +13,54 @@
           <span class="dot"></span>
           <div>
             <h1>ZAF BAT OS</h1>
-            <p>Internal v1</p>
+            <p>HNWI Maroc & MRE — v1</p>
           </div>
         </div>
 
-        <nav>
-          <button class="nav-btn active" data-screen="leads">Leads</button>
+        <nav class="nav">
+          <button class="nav-btn active" data-screen="dashboard">Dashboard</button>
+          <button class="nav-btn" data-screen="leads">Leads</button>
+          <button class="nav-btn" data-screen="qualifications">Qualification</button>
           <button class="nav-btn" data-screen="projects">Projets</button>
-          <button class="nav-btn muted" disabled>Qualification</button>
-          <button class="nav-btn muted" disabled>Reporting Hebdo</button>
-          <button class="nav-btn muted" disabled>Documents</button>
+          <button class="nav-btn" data-screen="reports">Reporting hebdo</button>
+          <button class="nav-btn" data-screen="documents">Documents</button>
+          <button class="nav-btn" data-screen="backup">Import / Export</button>
         </nav>
       </aside>
 
       <main class="content">
         <header class="topbar">
-          <h2 id="screen-title">Leads</h2>
-          <p>Design sobre & premium — cible HNWI Maroc / MRE</p>
+          <h2 id="screen-title">Dashboard</h2>
+          <p>Local-first, sans backend. Toutes les données sont persistées en localStorage.</p>
         </header>
 
-        <section id="leads-screen" class="screen active">
-          <div class="cards">
-            <article class="card">
-              <p>Nouveaux leads</p>
-              <strong id="kpi-new-leads">0</strong>
-            </article>
-            <article class="card">
-              <p>Leads qualifiés</p>
-              <strong id="kpi-qualified">0</strong>
-            </article>
-            <article class="card">
-              <p>Pipeline estimé (MAD)</p>
-              <strong id="kpi-pipeline">0</strong>
-            </article>
+        <section id="dashboard-screen" class="screen active">
+          <div class="cards" id="dashboard-kpis"></div>
+          <div class="panel">
+            <h3>Pipeline commercial</h3>
+            <div id="pipeline-overview"></div>
           </div>
+        </section>
 
-          <div class="table-wrap">
+        <section id="leads-screen" class="screen">
+          <div class="panel">
+            <h3>Nouveau lead</h3>
+            <form id="lead-form" class="grid-form"></form>
+          </div>
+          <div class="panel">
+            <h3>Recherche et filtres</h3>
+            <div class="inline-form" id="lead-filters"></div>
+          </div>
+          <div class="panel table-wrap">
             <table>
               <thead>
                 <tr>
                   <th>Nom</th>
                   <th>Type</th>
                   <th>Ville</th>
-                  <th>Budget estimé</th>
+                  <th>Budget (MAD)</th>
                   <th>Statut</th>
-                  <th>Owner</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="leads-body"></tbody>
@@ -65,36 +68,86 @@
           </div>
         </section>
 
-        <section id="projects-screen" class="screen">
-          <div class="cards">
-            <article class="card">
-              <p>Projets actifs</p>
-              <strong id="kpi-active-projects">0</strong>
-            </article>
-            <article class="card">
-              <p>Projets bloqués</p>
-              <strong id="kpi-blocked-projects">0</strong>
-            </article>
-            <article class="card">
-              <p>Valeur totale (MAD)</p>
-              <strong id="kpi-project-value">0</strong>
-            </article>
+        <section id="qualifications-screen" class="screen">
+          <div class="panel">
+            <h3>Qualifier un lead</h3>
+            <form id="qualification-form" class="grid-form"></form>
           </div>
+          <div class="panel table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Lead</th>
+                  <th>Score</th>
+                  <th>Priorité</th>
+                  <th>Décision</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="qualifications-body"></tbody>
+            </table>
+          </div>
+        </section>
 
-          <div class="table-wrap">
+        <section id="projects-screen" class="screen">
+          <div class="panel">
+            <h3>Nouveau projet</h3>
+            <form id="project-form" class="grid-form"></form>
+          </div>
+          <div class="panel table-wrap">
             <table>
               <thead>
                 <tr>
                   <th>Code</th>
                   <th>Titre</th>
                   <th>Ville</th>
-                  <th>Valeur estimée</th>
+                  <th>Valeur</th>
                   <th>Étape</th>
-                  <th>Chef de projet</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="projects-body"></tbody>
             </table>
+          </div>
+        </section>
+
+        <section id="reports-screen" class="screen">
+          <div class="panel">
+            <h3>Créer un reporting hebdomadaire</h3>
+            <form id="report-form" class="grid-form"></form>
+          </div>
+          <div class="panel table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Semaine</th>
+                  <th>Projets liés</th>
+                  <th>CA pipeline</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="reports-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="documents-screen" class="screen">
+          <div class="panel">
+            <h3>Génération de documents imprimables</h3>
+            <form id="document-form" class="grid-form"></form>
+            <p class="hint">Types disponibles: compte-rendu de visite, proposition premium, reporting hebdo.</p>
+          </div>
+        </section>
+
+        <section id="backup-screen" class="screen">
+          <div class="panel">
+            <h3>Sauvegarde</h3>
+            <div class="inline-form">
+              <button id="export-btn" type="button">Exporter JSON</button>
+              <label class="file-input">Importer JSON <input id="import-input" type="file" accept="application/json" /></label>
+              <button id="reset-btn" type="button" class="danger">Réinitialiser avec seed</button>
+            </div>
+            <p class="hint">L'import remplace la base locale actuelle après validation du format.</p>
           </div>
         </section>
       </main>

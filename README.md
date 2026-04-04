@@ -1,41 +1,44 @@
-# ZAF BAT OS — V1
+# ZAF BAT OS — V1 (Local-first MVP)
 
-V1 simple de l'OS interne **ZAF BAT** pour une cible **HNWI au Maroc & MRE**.
+V1 utilisable localement pour l'OS interne ZAF BAT, ciblant les workflows **HNWI Maroc** et **MRE**.
 
-## Objectif de cette V1
-Poser une base cohérente et minimaliste autour de 5 modules prioritaires :
-1. Leads
-2. Qualification
-3. Projets
-4. Reporting hebdomadaire
-5. Génération de documents
+## Démarrage
+Aucune dépendance.
 
-## Architecture proposée (minimaliste, extensible)
-Architecture modulaire orientée domaines :
+1. Ouvrir `src/index.html` dans un navigateur.
+2. Utiliser les modules via la navigation latérale.
+3. Les données sont persistées dans `localStorage` (clé: `zaf_bat_os_v1`).
 
-- `src/` : interface V1 (écrans Leads + Projets)
-- `docs/architecture.md` : vision projet, modules et flux
-- `docs/data-model.md` : modèle de données de référence (MVP)
+## Modules implémentés
+- Leads (CRUD + recherche + filtre)
+- Qualification (scoring, priorité, décision)
+- Projets (CRUD + conversion lead qualifié → projet)
+- Reporting hebdomadaire (lié à des projets)
+- Génération de documents imprimables:
+  - compte-rendu de visite
+  - proposition premium
+  - reporting hebdo
+- Import/Export JSON (backup local)
 
-Voir le détail dans `docs/architecture.md`.
+## Fichiers modifiés
+- `src/index.html`
+  - Structure de l'app (navigation + écrans Dashboard, Leads, Qualification, Projets, Reporting, Documents, Backup)
+  - Formulaires opérationnels et tables de données
+- `src/styles.css`
+  - Système visuel premium/sobre (palette, cartes KPI, tableaux, badges de statut)
+  - Composants formulaire/actions lisibles pour un usage exécutif
+- `src/app.js`
+  - Modèle d'état local-first
+  - Seed de données réaliste
+  - Persistance `localStorage`
+  - CRUD complet sur leads, qualifications, projets, reports
+  - Conversion lead qualifié vers projet
+  - Génération de vues imprimables
+  - Import/Export JSON
+- `README.md`
+  - Guide d'utilisation et portée fonctionnelle réelle de la V1
 
-## Modèle de données
-Le modèle couvre les entités métier clés :
-- `lead`
-- `qualification`
-- `project`
-- `weekly_report`
-- `generated_document`
-
-Voir `docs/data-model.md`.
-
-## Fichiers créés et rôle
-- `README.md` : cadrage global de la V1 + index documentaire.
-- `docs/architecture.md` : architecture cible et découpage des modules prioritaires.
-- `docs/data-model.md` : schéma logique MVP, relations et statuts.
-- `src/index.html` : premier écran applicatif (navigation + pages Leads/Projets).
-- `src/styles.css` : design sobre/premium (couleurs, grille, cartes, tableaux).
-- `src/app.js` : données mock, rendu des tableaux et interactions simples (filtres/onglets).
-
-## Lancement local (sans dépendances)
-Ouvrir simplement `src/index.html` dans un navigateur.
+## Limites explicites (non implémenté)
+- Pas d'authentification / rôles utilisateurs
+- Pas de backend / API
+- Pas d'envoi email / PDF serveur (impression navigateur uniquement)
