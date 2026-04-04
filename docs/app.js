@@ -37,6 +37,8 @@ function init() {
   renderForms();
   bindBackupActions();
   renderAll();
+  navigateFromHash();
+  window.addEventListener("hashchange", navigateFromHash);
 }
 
 
@@ -135,7 +137,16 @@ function bindNav() {
     screens[btn.dataset.screen].classList.add("active");
     byId("screen-title").textContent = btn.textContent;
     renderNavigationContext(btn.dataset.screen);
+    window.location.hash = `${btn.dataset.screen}-screen`;
   }));
+}
+
+function navigateFromHash() {
+  const raw = (window.location.hash || "").replace("#", "");
+  if (!raw.endsWith("-screen")) return;
+  const screen = raw.replace("-screen", "");
+  const target = document.querySelector(`.nav-btn[data-screen="${screen}"]`);
+  if (target) target.click();
 }
 
 function renderNavigationContext(screen) {
