@@ -126,7 +126,8 @@ function bindNav() {
     backup: byId("backup-screen")
   };
 
-  buttons.forEach((btn) => btn.addEventListener("click", () => {
+  buttons.forEach((btn) => btn.addEventListener("click", (e) => {
+    e.preventDefault();
     buttons.forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
     Object.values(screens).forEach((s) => s.classList.remove("active"));

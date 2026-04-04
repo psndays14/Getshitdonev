@@ -29,6 +29,7 @@ body {
 .nav { display: flex; flex-direction: column; gap: 8px; }
 .nav-group { margin: 10px 4px 2px; color: var(--muted); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; }
 .nav-btn {
+  display: block;
   padding: 10px 12px;
   border-radius: 10px;
   border: 1px solid var(--line);
@@ -36,6 +37,7 @@ body {
   color: var(--text);
   text-align: left;
   cursor: pointer;
+  text-decoration: none;
 }
 .nav-btn.active { background: var(--panel-2); border-color: rgba(141, 162, 251, 0.6); }
 
@@ -107,6 +109,7 @@ th { color: var(--muted); font-weight: 500; }
 .status.bad { color: var(--bad); border-color: rgba(244, 127, 127, 0.5); }
 
 .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.table-wrap tr { cursor: pointer; }
 .hint { color: var(--muted); font-size: 12px; margin-top: 8px; }
 .file-input { display: inline-flex; gap: 8px; align-items: center; }
 .file-input input { max-width: 220px; }
