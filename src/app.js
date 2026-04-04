@@ -26,6 +26,7 @@ const storage = createStorage();
 let db = loadDB();
 let uiState = { leadEditingId: null, projectEditingId: null, qualificationEditingId: null, leadSearch: "", leadStatusFilter: "ALL", selectedLeadId: null, selectedProjectId: null };
 
+document.body.classList.add("js");
 init();
 
 function init() {
