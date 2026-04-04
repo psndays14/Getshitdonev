@@ -18,6 +18,7 @@ const seedData = {
   ]
 };
 
+const storage = createStorage();
 let db = loadDB();
 let uiState = { leadEditingId: null, projectEditingId: null, qualificationEditingId: null, leadSearch: "", leadStatusFilter: "ALL" };
 
@@ -30,12 +31,29 @@ function init() {
   renderAll();
 }
 
+
+function createStorage() {
+  try {
+    const testKey = "__zaf_test__";
+    localStorage.setItem(testKey, "1");
+    localStorage.removeItem(testKey);
+    return localStorage;
+  } catch {
+    const memory = {};
+    return {
+      getItem: (k) => (k in memory ? memory[k] : null),
+      setItem: (k, v) => { memory[k] = String(v); },
+      removeItem: (k) => { delete memory[k]; }
+    };
+  }
+}
+
 function uid() {
   return `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
 }
 
 function loadDB() {
-  const raw = localStorage.getItem(DB_KEY);
+  const raw = storage.getItem(DB_KEY);
   if (!raw) return hydrateSeed();
   try {
     const parsed = JSON.parse(raw);
@@ -67,7 +85,7 @@ function ensureSchema(candidate) {
 
 function persist(next = db) {
   db = next;
-  localStorage.setItem(DB_KEY, JSON.stringify(db));
+  storage.setItem(DB_KEY, JSON.stringify(db));
 }
 
 function formatMad(v) {
