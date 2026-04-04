@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ZAF BAT OS — V1</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="dot"></span>
+          <div>
+            <h1>ZAF BAT OS</h1>
+            <p>Internal v1</p>
+          </div>
+        </div>
+
+        <nav>
+          <button class="nav-btn active" data-screen="leads">Leads</button>
+          <button class="nav-btn" data-screen="projects">Projets</button>
+          <button class="nav-btn muted" disabled>Qualification</button>
+          <button class="nav-btn muted" disabled>Reporting Hebdo</button>
+          <button class="nav-btn muted" disabled>Documents</button>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <header class="topbar">
+          <h2 id="screen-title">Leads</h2>
+          <p>Design sobre & premium — cible HNWI Maroc / MRE</p>
+        </header>
+
+        <section id="leads-screen" class="screen active">
+          <div class="cards">
+            <article class="card">
+              <p>Nouveaux leads</p>
+              <strong id="kpi-new-leads">0</strong>
+            </article>
+            <article class="card">
+              <p>Leads qualifiés</p>
+              <strong id="kpi-qualified">0</strong>
+            </article>
+            <article class="card">
+              <p>Pipeline estimé (MAD)</p>
+              <strong id="kpi-pipeline">0</strong>
+            </article>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Type</th>
+                  <th>Ville</th>
+                  <th>Budget estimé</th>
+                  <th>Statut</th>
+                  <th>Owner</th>
+                </tr>
+              </thead>
+              <tbody id="leads-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="projects-screen" class="screen">
+          <div class="cards">
+            <article class="card">
+              <p>Projets actifs</p>
+              <strong id="kpi-active-projects">0</strong>
+            </article>
+            <article class="card">
+              <p>Projets bloqués</p>
+              <strong id="kpi-blocked-projects">0</strong>
+            </article>
+            <article class="card">
+              <p>Valeur totale (MAD)</p>
+              <strong id="kpi-project-value">0</strong>
+            </article>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Titre</th>
+                  <th>Ville</th>
+                  <th>Valeur estimée</th>
+                  <th>Étape</th>
+                  <th>Chef de projet</th>
+                </tr>
+              </thead>
+              <tbody id="projects-body"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
