@@ -62,5 +62,7 @@ Aucune dépendance.
 
 
 ## GitHub Pages
+- Compatibilité 404: `404.html` ajouté en racine et dans `docs/` pour rediriger vers l'app.
+- Si Pages publie depuis `/docs`, une copie autonome de l'app est fournie dans `docs/` (index + app.js + styles.css).
 - Si Pages est configuré sur la racine: ouvrir `/` (redirection automatique vers `src/index.html`).
 - Si Pages est configuré sur `/docs`: ouvrir `/docs/` (redirection vers `src/index.html`).
