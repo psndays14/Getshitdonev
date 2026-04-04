@@ -1,5 +1,17 @@
 # ZAF BAT OS — V1 (Local-first MVP)
 
+## ⚠️ Important: GitHub repo page vs app
+Si tu ouvres le repo sur `github.com`, tu verras le README (normal).
+Pour voir le produit, il faut ouvrir l'URL GitHub Pages du repo:
+
+`https://<USERNAME>.github.io/<REPO>/`
+
+Exemple pour ce repo si owner = `<USERNAME>`:
+`https://<USERNAME>.github.io/Getshitdonev/`
+
+Le workflow `.github/workflows/deploy-pages.yml` publie automatiquement le site sur Pages.
+
+
 V1 utilisable localement pour l'OS interne ZAF BAT, ciblant les workflows **HNWI Maroc** et **MRE**.
 
 ## Démarrage
