@@ -17,13 +17,14 @@ const seedData = {
     { id: uid(), lead_id: null, code: "PRJ-102", title: "Riad Prestige", city: "Marrakech", value: 5600000, stage: "PLANNING", manager: "Meryem", start_date: "2026-04-15", target_date: "2026-12-10" }
   ],
   reports: [
-    { id: uid(), week_start: "2026-03-30", week_end: "2026-04-05", project_ids: [], revenue_pipeline: 15400000, notes: "Semaine stable, 1 conversion prévue." }
-  ]
+    { id: uid(), week_start: "2026-03-30", week_end: "2026-04-05", project_ids: [], revenue_pipeline: 15400000, summary: "Semaine stable.", risks: "Retard fournisseur sur un lot.", decisions: "Prioriser sourcing alternatif.", next_actions: "Point lundi 09:00.", notes: "Semaine stable, 1 conversion prévue." }
+  ],
+  events: []
 };
 
 const storage = createStorage();
 let db = loadDB();
-let uiState = { leadEditingId: null, projectEditingId: null, qualificationEditingId: null, leadSearch: "", leadStatusFilter: "ALL" };
+let uiState = { leadEditingId: null, projectEditingId: null, qualificationEditingId: null, leadSearch: "", leadStatusFilter: "ALL", selectedLeadId: null, selectedProjectId: null };
 
 init();
 
@@ -91,7 +92,8 @@ function ensureSchema(candidate) {
     leads: Array.isArray(candidate.leads) ? candidate.leads : [],
     qualifications: Array.isArray(candidate.qualifications) ? candidate.qualifications : [],
     projects: Array.isArray(candidate.projects) ? candidate.projects : [],
-    reports: Array.isArray(candidate.reports) ? candidate.reports : []
+    reports: Array.isArray(candidate.reports) ? candidate.reports : [],
+    events: Array.isArray(candidate.events) ? candidate.events : []
   };
 }
 
@@ -182,6 +184,10 @@ function renderForms() {
     ${field("Semaine fin", `<input name="week_end" type="date" required />`)}
     ${field("Pipeline MAD", `<input name="revenue_pipeline" type="number" min="0" required />`)}
     ${field("Projets liés", `<select id="report-project-select" name="project_ids" multiple size="4"></select>`)}
+    ${field("Synthèse", `<textarea name="summary" rows="2" required></textarea>`)}
+    ${field("Risques", `<textarea name="risks" rows="2" required></textarea>`)}
+    ${field("Décisions", `<textarea name="decisions" rows="2" required></textarea>`)}
+    ${field("Next actions", `<textarea name="next_actions" rows="2" required></textarea>`)}
     ${field("Notes", `<textarea name="notes" rows="2"></textarea>`)}
     <div class="inline-form"><button type="submit">Créer report</button></div>
   `;
@@ -227,9 +233,11 @@ function onLeadSubmit(e) {
     owner: f.get("owner").trim(),
     notes: f.get("notes").trim()
   };
+  if (!payload.full_name || !payload.city || !payload.owner || payload.budget <= 0) return alert("Lead invalide: champs obligatoires.");
 
   if (uiState.leadEditingId) db.leads = db.leads.map((l) => l.id === payload.id ? payload : l);
   else db.leads.unshift(payload);
+  addEvent("lead", payload.id, uiState.leadEditingId ? "updated" : "created", `${payload.full_name} (${payload.city})`);
 
   persist();
   e.target.reset();
@@ -255,9 +263,11 @@ function onQualificationSubmit(e) {
     decision: f.get("decision"),
     notes: f.get("notes").trim()
   };
+  if (!db.leads.find((l) => l.id === payload.lead_id)) return alert("Lead introuvable.");
 
   if (uiState.qualificationEditingId) db.qualifications = db.qualifications.map((q) => q.id === payload.id ? payload : q);
   else db.qualifications.unshift(payload);
+  addEvent("qualification", payload.id, uiState.qualificationEditingId ? "updated" : "created", `lead:${payload.lead_id} score:${payload.total_score}`);
 
   db.leads = db.leads.map((lead) => lead.id === payload.lead_id
     ? { ...lead, status: payload.decision === "PROCESS" ? "CONTACTED" : lead.status }
@@ -284,15 +294,23 @@ function onProjectSubmit(e) {
     stage: f.get("stage"),
     manager: f.get("manager").trim(),
     start_date: f.get("start_date"),
-    target_date: f.get("target_date")
+    target_date: f.get("target_date"),
+    tasks: uiState.projectEditingId ? (db.projects.find((x) => x.id === uiState.projectEditingId)?.tasks || []) : [
+      { id: uid(), title: "Kickoff client", status: "TODO" },
+      { id: uid(), title: "Validation budget", status: "TODO" }
+    ]
   };
+  if (!payload.title || !payload.code || !payload.city || payload.value <= 0) return alert("Projet invalide: champs obligatoires manquants.");
+  if (payload.start_date > payload.target_date) return alert("Dates projet incohérentes.");
 
   if (uiState.projectEditingId) db.projects = db.projects.map((p) => p.id === payload.id ? payload : p);
   else db.projects.unshift(payload);
 
   if (payload.lead_id) {
     db.leads = db.leads.map((lead) => lead.id === payload.lead_id ? { ...lead, status: "CONVERTED" } : lead);
+    addEvent("conversion", payload.id, "lead_to_project", `lead:${payload.lead_id} -> project:${payload.code}`);
   }
+  addEvent("project", payload.id, uiState.projectEditingId ? "updated" : "created", `${payload.code}`);
 
   persist();
   e.target.reset();
@@ -305,14 +323,22 @@ function onReportSubmit(e) {
   e.preventDefault();
   const f = new FormData(e.target);
   const project_ids = Array.from(byId("report-project-select").selectedOptions).map((o) => o.value);
+  const week_start = f.get("week_start");
+  const week_end = f.get("week_end");
+  if (week_end < week_start) return alert("Période hebdomadaire incohérente.");
   db.reports.unshift({
     id: uid(),
-    week_start: f.get("week_start"),
-    week_end: f.get("week_end"),
+    week_start,
+    week_end,
     revenue_pipeline: Number(f.get("revenue_pipeline") || 0),
     project_ids,
+    summary: f.get("summary").trim(),
+    risks: f.get("risks").trim(),
+    decisions: f.get("decisions").trim(),
+    next_actions: f.get("next_actions").trim(),
     notes: f.get("notes").trim()
   });
+  addEvent("report", db.reports[0].id, "created", `${week_start}→${week_end}`);
 
   persist();
   e.target.reset();
@@ -395,6 +421,8 @@ function renderAll() {
   renderQualificationsTable();
   renderProjectsTable();
   renderReportsTable();
+  renderLeadDetail();
+  renderProjectDetail();
 }
 
 function renderDashboard() {
@@ -432,6 +460,7 @@ function renderLeadsTable() {
         <td>${formatMad(lead.budget)}</td>
         <td><span class="status ${badgeClass(lead.status)}">${lead.status}</span></td>
         <td class="actions">
+          <button onclick="selectLead('${lead.id}')">Voir</button>
           <button onclick="editLead('${lead.id}')">Éditer</button>
           <button onclick="deleteLead('${lead.id}')">Supprimer</button>
           <button onclick="prefillQualification('${lead.id}')">Qualifier</button>
@@ -469,6 +498,9 @@ function renderProjectsTable() {
       <td>${formatMad(p.value)}</td>
       <td><span class="status ${badgeClass(p.stage)}">${p.stage}</span></td>
       <td class="actions">
+        <button onclick="selectProject('${p.id}')">Voir</button>
+        <button onclick="progressProjectStage('${p.id}')">Avancer</button>
+        <button onclick="toggleProjectBlocked('${p.id}')">${p.stage === "BLOCKED" ? "Débloquer" : "Bloquer"}</button>
         <button onclick="editProject('${p.id}')">Éditer</button>
         <button onclick="deleteProject('${p.id}')">Supprimer</button>
       </td>
@@ -482,7 +514,7 @@ function renderReportsTable() {
     return `<tr>
       <td>${r.week_start} → ${r.week_end}</td>
       <td>${count}</td>
-      <td>${formatMad(r.revenue_pipeline)}</td>
+      <td>${formatMad(r.revenue_pipeline)}<br/><small>${r.summary || "-"}</small></td>
       <td class="actions"><button onclick="deleteReport('${r.id}')">Supprimer</button></td>
     </tr>`;
   }).join("") || `<tr><td colspan="4">Aucun report.</td></tr>`;
@@ -576,6 +608,101 @@ function deleteReport(id) {
   toast("Report supprimé.");
 }
 
+function addEvent(entity_type, entity_id, action, details) {
+  db.events.unshift({ id: uid(), entity_type, entity_id, action, details, created_at: new Date().toISOString() });
+}
+
+function selectLead(id) {
+  uiState.selectedLeadId = id;
+  renderLeadDetail();
+}
+
+function selectProject(id) {
+  uiState.selectedProjectId = id;
+  renderProjectDetail();
+}
+
+function renderLeadDetail() {
+  const box = byId("lead-detail");
+  if (!box) return;
+  const lead = db.leads.find((l) => l.id === uiState.selectedLeadId) || db.leads[0];
+  if (!lead) return box.innerHTML = "Aucun lead.";
+  uiState.selectedLeadId = lead.id;
+  const qual = db.qualifications.find((q) => q.lead_id === lead.id);
+  const timeline = db.events.filter((e) => e.details?.includes(`lead:${lead.id}`) || e.entity_id === lead.id).slice(0, 8);
+  box.innerHTML = `
+    <div class="detail-grid">
+      <div class="detail-item"><strong>${lead.full_name}</strong><br/>${lead.profile_type} · ${lead.city}</div>
+      <div class="detail-item">Budget: ${formatMad(lead.budget)} MAD<br/>Statut: <span class="status ${badgeClass(lead.status)}">${lead.status}</span></div>
+      <div class="detail-item">Source: ${lead.source}<br/>Owner: ${lead.owner}</div>
+      <div class="detail-item">Qualification: ${qual ? `${qual.total_score}/100 (${qual.decision})` : "non qualifié"}</div>
+    </div>
+    <div class="timeline">${timeline.map((t) => `<div class="timeline-entry">${t.created_at.slice(0, 16).replace("T", " ")} · ${t.action} · ${t.details}</div>`).join("") || "<div class='timeline-entry'>Aucun historique</div>"}</div>
+  `;
+}
+
+function renderProjectDetail() {
+  const box = byId("project-detail");
+  if (!box) return;
+  const project = db.projects.find((p) => p.id === uiState.selectedProjectId) || db.projects[0];
+  if (!project) return box.innerHTML = "Aucun projet.";
+  uiState.selectedProjectId = project.id;
+  const lead = db.leads.find((l) => l.id === project.lead_id);
+  const timeline = db.events.filter((e) => e.entity_id === project.id).slice(0, 8);
+  box.innerHTML = `
+    <div class="detail-grid">
+      <div class="detail-item"><strong>${project.code}</strong><br/>${project.title}</div>
+      <div class="detail-item">Étape: <span class="status ${badgeClass(project.stage)}">${project.stage}</span><br/>Valeur: ${formatMad(project.value)} MAD</div>
+      <div class="detail-item">Lead origine: ${lead ? lead.full_name : "N/A"}</div>
+      <div class="detail-item">Dates: ${project.start_date} → ${project.target_date}</div>
+    </div>
+    <h4>Tâches</h4>
+    <div class="timeline">${(project.tasks || []).map((task) => `<div class="timeline-entry">${task.title} · ${task.status} <button onclick="cycleTaskStatus('${project.id}','${task.id}')">changer</button></div>`).join("") || "<div class='timeline-entry'>Aucune tâche</div>"}</div>
+    <h4>Historique</h4>
+    <div class="timeline">${timeline.map((t) => `<div class="timeline-entry">${t.created_at.slice(0, 16).replace("T", " ")} · ${t.action} · ${t.details}</div>`).join("") || "<div class='timeline-entry'>Aucun historique</div>"}</div>
+  `;
+}
+
+function progressProjectStage(projectId) {
+  const order = ["PLANNING", "IN_PROGRESS", "DELIVERED"];
+  db.projects = db.projects.map((p) => {
+    if (p.id !== projectId || p.stage === "BLOCKED") return p;
+    const idx = order.indexOf(p.stage);
+    const next = idx >= 0 && idx < order.length - 1 ? order[idx + 1] : p.stage;
+    if (next !== p.stage) addEvent("project", p.id, "stage_progress", `${p.stage} -> ${next}`);
+    return { ...p, stage: next };
+  });
+  persist();
+  renderAll();
+}
+
+function toggleProjectBlocked(projectId) {
+  db.projects = db.projects.map((p) => {
+    if (p.id !== projectId) return p;
+    const next = p.stage === "BLOCKED" ? "IN_PROGRESS" : "BLOCKED";
+    addEvent("project", p.id, "stage_toggle", `${p.stage} -> ${next}`);
+    return { ...p, stage: next };
+  });
+  persist();
+  renderAll();
+}
+
+function cycleTaskStatus(projectId, taskId) {
+  const order = ["TODO", "DOING", "DONE"];
+  db.projects = db.projects.map((p) => {
+    if (p.id !== projectId) return p;
+    const tasks = (p.tasks || []).map((t) => {
+      if (t.id !== taskId) return t;
+      const next = order[(order.indexOf(t.status) + 1) % order.length];
+      addEvent("project_task", projectId, "task_progress", `${t.title}: ${t.status} -> ${next}`);
+      return { ...t, status: next };
+    });
+    return { ...p, tasks };
+  });
+  persist();
+  renderProjectDetail();
+}
+
 function field(labelText, input) {
   return `<label>${labelText}${input}</label>`;
 }
@@ -607,3 +734,8 @@ window.convertLeadToProject = convertLeadToProject;
 window.editProject = editProject;
 window.deleteProject = deleteProject;
 window.deleteReport = deleteReport;
+window.selectLead = selectLead;
+window.selectProject = selectProject;
+window.progressProjectStage = progressProjectStage;
+window.toggleProjectBlocked = toggleProjectBlocked;
+window.cycleTaskStatus = cycleTaskStatus;
