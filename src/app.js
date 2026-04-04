@@ -257,6 +257,7 @@ function bindForms() {
   byId("qualification-form").onsubmit = onQualificationSubmit;
   byId("qualification-cancel-edit").onclick = () => { uiState.qualificationEditingId = null; byId("qualification-form").reset(); };
   byId("qualification-lead-select").onchange = () => renderQualificationLeadSummary();
+  byId("convert-from-qualification").onclick = convertFromQualificationScreen;
 
   byId("project-form").onsubmit = onProjectSubmit;
   byId("project-cancel-edit").onclick = () => { uiState.projectEditingId = null; byId("project-form").reset(); };
@@ -682,6 +683,43 @@ function convertLeadToProject(leadId) {
   document.querySelector('[data-screen="projects"]').click();
 }
 
+function convertFromQualificationScreen() {
+  const leadId = byId("qualification-lead-select")?.value;
+  if (!leadId) return alert("Sélectionnez un lead.");
+  const q = db.qualifications.find((x) => x.lead_id === leadId);
+  if (!q) return alert("Aucune qualification enregistrée pour ce lead.");
+  if (!q.decision) return alert("Enregistrez d'abord une décision.");
+  const existing = db.projects.find((p) => p.lead_id === leadId);
+  if (existing) {
+    selectProject(existing.id);
+    return goTo("projects");
+  }
+  const lead = db.leads.find((l) => l.id === leadId);
+  const newProject = {
+    id: uid(),
+    lead_id: leadId,
+    code: `PRJ-${String(Date.now()).slice(-5)}`,
+    title: lead ? `Projet ${lead.full_name}` : "Nouveau projet",
+    city: lead?.city || "Casablanca",
+    value: Number(lead?.budget || 0),
+    stage: "PLANNING",
+    manager: q.next_owner || "À assigner",
+    start_date: new Date().toISOString().slice(0, 10),
+    target_date: new Date(Date.now() + 1000 * 60 * 60 * 24 * 90).toISOString().slice(0, 10),
+    tasks: [
+      { id: uid(), title: "Kickoff client", status: "TODO" },
+      { id: uid(), title: "Audit initial", status: "TODO" }
+    ]
+  };
+  db.projects.unshift(newProject);
+  db.leads = db.leads.map((l) => l.id === leadId ? { ...l, status: "CONVERTED" } : l);
+  addEvent("conversion", newProject.id, "qualification_to_project", `lead:${leadId} -> project:${newProject.code}`);
+  persist();
+  selectProject(newProject.id);
+  goTo("projects");
+  toast("Projet créé depuis qualification.");
+}
+
 function editProject(id) {
   const p = db.projects.find((x) => x.id === id);
   if (!p) return;
@@ -874,3 +912,4 @@ window.goTo = goTo;
 window.openPremiumProposalForLead = openPremiumProposalForLead;
 window.openReportForProject = openReportForProject;
 window.openDocumentForProject = openDocumentForProject;
+window.convertFromQualificationScreen = convertFromQualificationScreen;
