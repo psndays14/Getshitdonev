@@ -47,3 +47,8 @@ Aucune dépendance.
 ## Version courante UI
 - Build: `v1.0.2`
 - Updated: `2026-04-04`
+
+
+## GitHub Pages
+- Si Pages est configuré sur la racine: ouvrir `/` (redirection automatique vers `src/index.html`).
+- Si Pages est configuré sur `/docs`: ouvrir `/docs/` (redirection vers `src/index.html`).
