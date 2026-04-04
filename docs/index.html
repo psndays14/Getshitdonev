@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ZAF BAT OS — V1 local-first</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="dot"></span>
+          <div>
+            <h1>ZAF BAT OS</h1>
+            <p>HNWI Maroc & MRE — v1</p>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <p class="nav-group">Pilotage</p>
+          <a class="nav-btn active" data-screen="dashboard" href="#dashboard-screen">Dashboard</a>
+
+          <p class="nav-group">Commercial</p>
+          <a class="nav-btn" data-screen="leads" href="#leads-screen">Leads</a>
+          <a class="nav-btn" data-screen="qualifications" href="#qualifications-screen">Qualification</a>
+          <a class="nav-btn" data-screen="offers" href="#offers-screen">Offers / Proposals</a>
+
+          <p class="nav-group">Projets</p>
+          <a class="nav-btn" data-screen="projects" href="#projects-screen">Active projects</a>
+          <a class="nav-btn" data-screen="reports" href="#reports-screen">Weekly reports</a>
+
+          <p class="nav-group">Opérations</p>
+          <a class="nav-btn" data-screen="documents" href="#documents-screen">Documents</a>
+          <a class="nav-btn" data-screen="backup" href="#backup-screen">Data / Backup</a>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <header class="topbar">
+          <div>
+            <p class="breadcrumb" id="breadcrumb">Pilotage / Dashboard</p>
+            <h2 id="screen-title">Dashboard</h2>
+            <p>Local-first, sans backend. Toutes les données sont persistées en localStorage.</p>
+            <p class="build" id="build-info"></p>
+          </div>
+          <button id="primary-action" type="button">Nouvelle action</button>
+        </header>
+
+        <section id="dashboard-screen" class="screen active">
+          <div class="cards" id="dashboard-kpis"></div>
+          <div class="panel">
+            <h3>Pipeline commercial</h3>
+            <div id="pipeline-overview"></div>
+          </div>
+          <div class="panel">
+            <h3>Étape suivante recommandée</h3>
+            <p>Commencer par <strong>New lead</strong>, puis qualifier, convertir en projet, créer un report, puis générer un document.</p>
+          </div>
+        </section>
+
+        <section id="leads-screen" class="screen">
+          <div class="panel"><h3>Nouveau lead</h3><form id="lead-form" class="grid-form"></form></div>
+          <div class="panel"><h3>Recherche et filtres</h3><div class="inline-form" id="lead-filters"></div></div>
+          <div class="panel table-wrap"><table><thead><tr><th>Nom</th><th>Type</th><th>Ville</th><th>Budget (MAD)</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="leads-body"></tbody></table></div>
+          <div class="panel"><h3>Détail lead</h3><div id="lead-detail" class="detail-box"></div></div>
+        </section>
+
+        <section id="qualifications-screen" class="screen">
+          <div class="panel"><h3>1) Lead summary</h3><div id="qualification-lead-summary" class="detail-box"></div></div>
+          <div class="panel"><h3>2) Qualification criteria</h3><form id="qualification-form" class="grid-form"></form></div>
+          <div class="panel"><h3>3) Decision block + 4) Mandatory next step</h3><p class="hint">La sauvegarde exige une décision + owner + due date + next action + note.</p><div class="inline-form"><button id="convert-from-qualification" type="button">Convertir en projet (depuis qualification)</button></div></div>
+          <div class="panel table-wrap"><table><thead><tr><th>Lead</th><th>Score</th><th>Priorité</th><th>Décision</th><th>Actions</th></tr></thead><tbody id="qualifications-body"></tbody></table></div>
+        </section>
+
+        <section id="offers-screen" class="screen">
+          <div class="panel">
+            <h3>Offers / Proposals</h3>
+            <p class="hint">Cette vue concentre les opportunités qualifiées prêtes à passer en proposition premium.</p>
+            <div class="table-wrap"><table><thead><tr><th>Lead</th><th>Score</th><th>Décision</th><th>Action suivante</th></tr></thead><tbody id="offers-body"></tbody></table></div>
+          </div>
+        </section>
+
+        <section id="projects-screen" class="screen">
+          <div class="panel"><h3>Nouveau projet</h3><form id="project-form" class="grid-form"></form></div>
+          <div class="panel table-wrap"><table><thead><tr><th>Code</th><th>Titre</th><th>Ville</th><th>Valeur</th><th>Étape</th><th>Actions</th></tr></thead><tbody id="projects-body"></tbody></table></div>
+          <div class="panel"><h3>Détail projet</h3><div id="project-detail" class="detail-box"></div></div>
+        </section>
+
+        <section id="reports-screen" class="screen">
+          <div class="panel"><h3>Créer un reporting hebdomadaire</h3><form id="report-form" class="grid-form"></form></div>
+          <div class="panel table-wrap"><table><thead><tr><th>Semaine</th><th>Projets liés</th><th>CA pipeline</th><th>Actions</th></tr></thead><tbody id="reports-body"></tbody></table></div>
+        </section>
+
+        <section id="documents-screen" class="screen">
+          <div class="panel"><h3>Génération de documents imprimables</h3><form id="document-form" class="grid-form"></form><p class="hint">Types disponibles: compte-rendu de visite, proposition premium, reporting hebdo.</p></div>
+        </section>
+
+        <div class="panel"><h3>Pack opérationnel (pages séparées)</h3><div class="inline-form"><a class="nav-btn" href="./pack-templates.html" target="_blank">Pack des templates</a><a class="nav-btn" href="./sop-v1-hnwi-mre.html" target="_blank">SOP v1 HNWI/MRE</a><a class="nav-btn" href="./lead-template.html" target="_blank">Fiche lead</a><a class="nav-btn" href="./qualification-template.html" target="_blank">Script qualification</a><a class="nav-btn" href="./visite-template.html" target="_blank">Compte-rendu visite</a><a class="nav-btn" href="./proposition-template.html" target="_blank">Proposition premium</a><a class="nav-btn" href="./checklist-template.html" target="_blank">Checklist chantier</a><a class="nav-btn" href="./rapport-template.html" target="_blank">Rapport hebdo</a></div></div>
+
+        <section id="backup-screen" class="screen">
+          <div class="panel"><h3>Data / Backup</h3><div class="inline-form"><button id="export-btn" type="button">Exporter JSON</button><label class="file-input">Importer JSON <input id="import-input" type="file" accept="application/json" /></label><button id="reset-btn" type="button" class="danger">Réinitialiser avec seed</button></div><p class="hint">L'import remplace la base locale actuelle après validation du format.</p></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
