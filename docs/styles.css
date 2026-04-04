@@ -27,6 +27,7 @@ body {
 .brand p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
 
 .nav { display: flex; flex-direction: column; gap: 8px; }
+.nav-group { margin: 10px 4px 2px; color: var(--muted); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; }
 .nav-btn {
   padding: 10px 12px;
   border-radius: 10px;
@@ -39,8 +40,10 @@ body {
 .nav-btn.active { background: var(--panel-2); border-color: rgba(141, 162, 251, 0.6); }
 
 .content { padding: 28px; }
+.topbar { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
 .topbar h2 { margin: 0; }
 .topbar p { margin: 6px 0 18px; color: var(--muted); }
+.breadcrumb { margin: 0; font-size: 12px; color: var(--accent) !important; }
 
 .screen { display: none; }
 .screen.active { display: block; }

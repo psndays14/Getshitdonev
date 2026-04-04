@@ -32,6 +32,7 @@ function init() {
   const buildNode = byId("build-info");
   if (buildNode) buildNode.textContent = `Build ${APP_VERSION} — updated ${APP_UPDATED_AT}`;
   bindNav();
+  renderNavigationContext("dashboard");
   renderForms();
   bindBackupActions();
   renderAll();
@@ -118,6 +119,7 @@ function bindNav() {
     dashboard: byId("dashboard-screen"),
     leads: byId("leads-screen"),
     qualifications: byId("qualifications-screen"),
+    offers: byId("offers-screen"),
     projects: byId("projects-screen"),
     reports: byId("reports-screen"),
     documents: byId("documents-screen"),
@@ -130,7 +132,32 @@ function bindNav() {
     Object.values(screens).forEach((s) => s.classList.remove("active"));
     screens[btn.dataset.screen].classList.add("active");
     byId("screen-title").textContent = btn.textContent;
+    renderNavigationContext(btn.dataset.screen);
   }));
+}
+
+function renderNavigationContext(screen) {
+  const mapping = {
+    dashboard: { bc: "Pilotage / Dashboard", action: { label: "New lead", fn: () => goTo("leads") } },
+    leads: { bc: "Commercial / Leads", action: { label: "New lead", fn: () => byId("lead-form").scrollIntoView({ behavior: "smooth" }) } },
+    qualifications: { bc: "Commercial / Qualification", action: { label: "Qualifier lead", fn: () => byId("qualification-form").scrollIntoView({ behavior: "smooth" }) } },
+    offers: { bc: "Commercial / Offers", action: { label: "Open documents", fn: () => goTo("documents") } },
+    projects: { bc: "Projets / Active projects", action: { label: "New project", fn: () => byId("project-form").scrollIntoView({ behavior: "smooth" }) } },
+    reports: { bc: "Projets / Weekly reports", action: { label: "Create report", fn: () => byId("report-form").scrollIntoView({ behavior: "smooth" }) } },
+    documents: { bc: "Opérations / Documents", action: { label: "Generate document", fn: () => byId("document-form").scrollIntoView({ behavior: "smooth" }) } },
+    backup: { bc: "Opérations / Data backup", action: { label: "Export JSON", fn: () => byId("export-btn").click() } }
+  };
+  const meta = mapping[screen];
+  if (!meta) return;
+  byId("breadcrumb").textContent = meta.bc;
+  const btn = byId("primary-action");
+  btn.textContent = meta.action.label;
+  btn.onclick = meta.action.fn;
+}
+
+function goTo(screen) {
+  const target = document.querySelector(`.nav-btn[data-screen=\"${screen}\"]`);
+  if (target) target.click();
 }
 
 function renderForms() {
@@ -421,6 +448,7 @@ function renderAll() {
   renderQualificationsTable();
   renderProjectsTable();
   renderReportsTable();
+  renderOffersTable();
   renderLeadDetail();
   renderProjectDetail();
 }
@@ -453,13 +481,13 @@ function renderLeadsTable() {
       return textOk && statusOk;
     })
     .map((lead) => `
-      <tr>
+      <tr onclick="selectLead('${lead.id}')">
         <td>${lead.full_name}</td>
         <td>${lead.profile_type}</td>
         <td>${lead.city}</td>
         <td>${formatMad(lead.budget)}</td>
         <td><span class="status ${badgeClass(lead.status)}">${lead.status}</span></td>
-        <td class="actions">
+        <td class="actions" onclick="event.stopPropagation()">
           <button onclick="selectLead('${lead.id}')">Voir</button>
           <button onclick="editLead('${lead.id}')">Éditer</button>
           <button onclick="deleteLead('${lead.id}')">Supprimer</button>
@@ -491,13 +519,13 @@ function renderQualificationsTable() {
 
 function renderProjectsTable() {
   byId("projects-body").innerHTML = db.projects.map((p) => `
-    <tr>
+    <tr onclick="selectProject('${p.id}')">
       <td>${p.code}</td>
       <td>${p.title}</td>
       <td>${p.city}</td>
       <td>${formatMad(p.value)}</td>
       <td><span class="status ${badgeClass(p.stage)}">${p.stage}</span></td>
-      <td class="actions">
+      <td class="actions" onclick="event.stopPropagation()">
         <button onclick="selectProject('${p.id}')">Voir</button>
         <button onclick="progressProjectStage('${p.id}')">Avancer</button>
         <button onclick="toggleProjectBlocked('${p.id}')">${p.stage === "BLOCKED" ? "Débloquer" : "Bloquer"}</button>
@@ -518,6 +546,26 @@ function renderReportsTable() {
       <td class="actions"><button onclick="deleteReport('${r.id}')">Supprimer</button></td>
     </tr>`;
   }).join("") || `<tr><td colspan="4">Aucun report.</td></tr>`;
+}
+
+function renderOffersTable() {
+  const rows = db.qualifications
+    .filter((q) => q.decision === "PROCESS")
+    .map((q) => {
+      const lead = db.leads.find((l) => l.id === q.lead_id);
+      if (!lead) return "";
+      return `<tr>
+        <td>${lead.full_name}</td>
+        <td>${q.total_score}/100</td>
+        <td><span class="status ${badgeClass(q.decision)}">${q.decision}</span></td>
+        <td class="actions">
+          <button onclick="selectLead('${lead.id}');goTo('leads')">Ouvrir lead</button>
+          <button onclick="convertLeadToProject('${lead.id}');goTo('projects')">Convertir projet</button>
+          <button onclick="openPremiumProposalForLead('${lead.id}')">Proposition premium</button>
+        </td>
+      </tr>`;
+    }).join("");
+  byId("offers-body").innerHTML = rows || `<tr><td colspan="4">Aucune opportunité qualifiée. Étape suivante: qualifier un lead depuis Commercial / Leads.</td></tr>`;
 }
 
 function renderLeadSelects() {
@@ -637,6 +685,10 @@ function renderLeadDetail() {
       <div class="detail-item">Source: ${lead.source}<br/>Owner: ${lead.owner}</div>
       <div class="detail-item">Qualification: ${qual ? `${qual.total_score}/100 (${qual.decision})` : "non qualifié"}</div>
     </div>
+    <div class="inline-form" style="margin-top:8px;">
+      <button onclick="prefillQualification('${lead.id}');goTo('qualifications')">Qualifier ce lead</button>
+      <button onclick="convertLeadToProject('${lead.id}');goTo('projects')">Convertir en projet</button>
+    </div>
     <div class="timeline">${timeline.map((t) => `<div class="timeline-entry">${t.created_at.slice(0, 16).replace("T", " ")} · ${t.action} · ${t.details}</div>`).join("") || "<div class='timeline-entry'>Aucun historique</div>"}</div>
   `;
 }
@@ -660,7 +712,35 @@ function renderProjectDetail() {
     <div class="timeline">${(project.tasks || []).map((task) => `<div class="timeline-entry">${task.title} · ${task.status} <button onclick="cycleTaskStatus('${project.id}','${task.id}')">changer</button></div>`).join("") || "<div class='timeline-entry'>Aucune tâche</div>"}</div>
     <h4>Historique</h4>
     <div class="timeline">${timeline.map((t) => `<div class="timeline-entry">${t.created_at.slice(0, 16).replace("T", " ")} · ${t.action} · ${t.details}</div>`).join("") || "<div class='timeline-entry'>Aucun historique</div>"}</div>
+    <div class="inline-form" style="margin-top:8px;">
+      <button onclick="openReportForProject('${project.id}')">Créer weekly report</button>
+      <button onclick="openDocumentForProject('${project.id}')">Générer document</button>
+    </div>
   `;
+}
+
+function openReportForProject(projectId) {
+  goTo("reports");
+  setTimeout(() => {
+    const select = byId("report-project-select");
+    Array.from(select.options).forEach((o) => { o.selected = o.value === projectId; });
+    select.scrollIntoView({ behavior: "smooth" });
+  }, 50);
+}
+
+function openDocumentForProject(projectId) {
+  goTo("documents");
+  setTimeout(() => {
+    byId("document-project-select").value = projectId;
+    byId("document-form").elements.doc_type.value = "premium_proposal";
+    byId("document-form").scrollIntoView({ behavior: "smooth" });
+  }, 50);
+}
+
+function openPremiumProposalForLead(leadId) {
+  const project = db.projects.find((p) => p.lead_id === leadId);
+  if (!project) return alert("Aucun projet lié. Convertissez d'abord le lead.");
+  openDocumentForProject(project.id);
 }
 
 function progressProjectStage(projectId) {
@@ -739,3 +819,7 @@ window.selectProject = selectProject;
 window.progressProjectStage = progressProjectStage;
 window.toggleProjectBlocked = toggleProjectBlocked;
 window.cycleTaskStatus = cycleTaskStatus;
+window.goTo = goTo;
+window.openPremiumProposalForLead = openPremiumProposalForLead;
+window.openReportForProject = openReportForProject;
+window.openDocumentForProject = openDocumentForProject;
