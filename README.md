@@ -66,3 +66,12 @@ Aucune dépendance.
 - Si Pages publie depuis `/docs`, une copie autonome de l'app est fournie dans `docs/` (index + app.js + styles.css).
 - Si Pages est configuré sur la racine: ouvrir `/` (redirection automatique vers `src/index.html`).
 - Si Pages est configuré sur `/docs`: ouvrir `/docs/` (redirection vers `src/index.html`).
+
+
+### Dépannage 404 (GitHub Pages)
+1. Aller dans **Settings > Pages**.
+2. Vérifier **Source = GitHub Actions** (si tu utilises le workflow).
+3. Vérifier qu'un run `Deploy GitHub Pages` est **vert** dans l'onglet Actions.
+4. Ouvrir ensuite: `https://<USERNAME>.github.io/Getshitdonev/`
+
+Si tu vois encore 404, c'est presque toujours un problème de configuration Pages côté repo (pas du code front).
