@@ -197,12 +197,17 @@ function renderForms() {
 
   byId("qualification-form").innerHTML = `
     ${field("Lead", `<select name="lead_id" id="qualification-lead-select" required></select>`)}
-    ${field("Budget score", `<input name="budget_score" type="number" min="0" max="25" required />`)}
-    ${field("Intent score", `<input name="intent_score" type="number" min="0" max="25" required />`)}
-    ${field("Timeline score", `<input name="timeline_score" type="number" min="0" max="25" required />`)}
-    ${field("Solvency score", `<input name="solvency_score" type="number" min="0" max="25" required />`)}
-    ${field("Décision", `<select name="decision"><option>PROCESS</option><option>NURTURE</option><option>DROP</option></select>`)}
-    ${field("Notes", `<textarea name="notes" rows="2"></textarea>`)}
+    ${field("Projet réel", `<select name="is_real_project" required><option value=\"yes\">Oui</option><option value=\"no\">Non</option></select>`)}
+    ${field("Localisation claire", `<select name="is_location_clear" required><option value=\"yes\">Oui</option><option value=\"no\">Non</option></select>`)}
+    ${field("Budget plausible", `<select name=\"is_budget_plausible\" required><option value=\"yes\">Oui</option><option value=\"no\">Non</option></select>`)}
+    ${field("Décideur identifié", `<select name=\"is_decision_maker\" required><option value=\"yes\">Oui</option><option value=\"no\">Non</option></select>`)}
+    ${field("Timing réaliste", `<select name=\"is_timing_realistic\" required><option value=\"yes\">Oui</option><option value=\"no\">Non</option></select>`)}
+    ${field("Premium fit", `<select name=\"is_premium_fit\" required><option value=\"yes\">Oui</option><option value=\"no\">Non</option></select>`)}
+    ${field("Décision", `<select name=\"decision\" required><option value=\"\">Choisir</option><option>REJECT</option><option>NURTURE</option><option>AUDIT</option><option>OFFER</option><option>VISIT</option><option>CONVERT_TO_PROJECT</option></select>`)}
+    ${field("Owner", `<input name=\"next_owner\" required />`)}
+    ${field("Due date", `<input name=\"next_due_date\" type=\"date\" required />`)}
+    ${field("Next action", `<input name=\"next_action\" required />`)}
+    ${field("Note", `<textarea name=\"notes\" rows=\"2\" required></textarea>`)}
     <div class="inline-form"><button type="submit">Enregistrer qualification</button><button type="button" id="qualification-cancel-edit">Annuler édition</button></div>
   `;
 
@@ -251,6 +256,7 @@ function bindForms() {
 
   byId("qualification-form").onsubmit = onQualificationSubmit;
   byId("qualification-cancel-edit").onclick = () => { uiState.qualificationEditingId = null; byId("qualification-form").reset(); };
+  byId("qualification-lead-select").onchange = () => renderQualificationLeadSummary();
 
   byId("project-form").onsubmit = onProjectSubmit;
   byId("project-cancel-edit").onclick = () => { uiState.projectEditingId = null; byId("project-form").reset(); };
@@ -289,28 +295,35 @@ function onLeadSubmit(e) {
 function onQualificationSubmit(e) {
   e.preventDefault();
   const f = new FormData(e.target);
-  const total = ["budget_score", "intent_score", "timeline_score", "solvency_score"].reduce((sum, k) => sum + Number(f.get(k) || 0), 0);
+  const criteriaKeys = ["is_real_project", "is_location_clear", "is_budget_plausible", "is_decision_maker", "is_timing_realistic", "is_premium_fit"];
+  const total = criteriaKeys.reduce((sum, k) => sum + (f.get(k) === "yes" ? 16 : 0), 0);
   const priority = total >= 75 ? "HIGH" : total >= 50 ? "MEDIUM" : "LOW";
   const payload = {
     id: uiState.qualificationEditingId || uid(),
     lead_id: f.get("lead_id"),
-    budget_score: Number(f.get("budget_score")),
-    intent_score: Number(f.get("intent_score")),
-    timeline_score: Number(f.get("timeline_score")),
-    solvency_score: Number(f.get("solvency_score")),
+    is_real_project: f.get("is_real_project"),
+    is_location_clear: f.get("is_location_clear"),
+    is_budget_plausible: f.get("is_budget_plausible"),
+    is_decision_maker: f.get("is_decision_maker"),
+    is_timing_realistic: f.get("is_timing_realistic"),
+    is_premium_fit: f.get("is_premium_fit"),
     total_score: total,
     priority,
     decision: f.get("decision"),
+    next_owner: f.get("next_owner").trim(),
+    next_due_date: f.get("next_due_date"),
+    next_action: f.get("next_action").trim(),
     notes: f.get("notes").trim()
   };
   if (!db.leads.find((l) => l.id === payload.lead_id)) return alert("Lead introuvable.");
+  if (!payload.decision || !payload.next_owner || !payload.next_due_date || !payload.next_action || !payload.notes) return alert("Décision et next step obligatoires.");
 
   if (uiState.qualificationEditingId) db.qualifications = db.qualifications.map((q) => q.id === payload.id ? payload : q);
   else db.qualifications.unshift(payload);
   addEvent("qualification", payload.id, uiState.qualificationEditingId ? "updated" : "created", `lead:${payload.lead_id} score:${payload.total_score}`);
 
   db.leads = db.leads.map((lead) => lead.id === payload.lead_id
-    ? { ...lead, status: payload.decision === "PROCESS" ? "CONTACTED" : lead.status }
+    ? { ...lead, status: ["OFFER", "VISIT", "CONVERT_TO_PROJECT"].includes(payload.decision) ? "CONTACTED" : lead.status }
     : lead
   );
 
@@ -319,6 +332,11 @@ function onQualificationSubmit(e) {
   uiState.qualificationEditingId = null;
   renderAll();
   toast("Qualification enregistrée.");
+  if (payload.decision === "CONVERT_TO_PROJECT") {
+    byId("project-lead-select").value = payload.lead_id;
+    goTo("projects");
+    toast("Lead prêt à convertir en projet.");
+  }
 }
 
 function onProjectSubmit(e) {
@@ -462,6 +480,7 @@ function renderAll() {
   renderProjectsTable();
   renderReportsTable();
   renderOffersTable();
+  renderQualificationLeadSummary();
   renderLeadDetail();
   renderProjectDetail();
 }
@@ -563,7 +582,7 @@ function renderReportsTable() {
 
 function renderOffersTable() {
   const rows = db.qualifications
-    .filter((q) => q.decision === "PROCESS")
+    .filter((q) => ["OFFER", "VISIT", "CONVERT_TO_PROJECT"].includes(q.decision))
     .map((q) => {
       const lead = db.leads.find((l) => l.id === q.lead_id);
       if (!lead) return "";
@@ -586,6 +605,25 @@ function renderLeadSelects() {
   byId("qualification-lead-select").innerHTML = opts;
   byId("project-lead-select").innerHTML = `<option value="">Aucun</option>${opts}`;
   byId("document-lead-select").innerHTML = `<option value="">--</option>${opts}`;
+}
+
+function renderQualificationLeadSummary() {
+  const box = byId("qualification-lead-summary");
+  if (!box) return;
+  const leadId = byId("qualification-lead-select")?.value;
+  const lead = db.leads.find((l) => l.id === leadId) || db.leads[0];
+  if (!lead) return box.innerHTML = "Aucun lead disponible.";
+  const decisionMaker = /d[ée]cideur|decision-maker/i.test(lead.notes || "") ? "Oui" : "Non";
+  const needType = lead.notes ? lead.notes.split(".")[0] : "Non précisé";
+  box.innerHTML = `<div class=\"detail-grid\">
+    <div class=\"detail-item\"><strong>${lead.full_name}</strong><br/>${lead.city}</div>
+    <div class=\"detail-item\">Segment: ${lead.profile_type === "MRE" ? "MRE" : "HNWI local"}</div>
+    <div class=\"detail-item\">Need type: ${needType}</div>
+    <div class=\"detail-item\">Budget indicatif: ${formatMad(lead.budget)} MAD</div>
+    <div class=\"detail-item\">Source: ${lead.source}</div>
+    <div class=\"detail-item\">Decision-maker identifié: ${decisionMaker}</div>
+  </div>`;
+  byId("qualification-lead-select").value = lead.id;
 }
 
 function renderProjectSelects() {
@@ -638,8 +676,8 @@ function deleteQualification(id) {
 }
 
 function convertLeadToProject(leadId) {
-  const q = db.qualifications.find((x) => x.lead_id === leadId && x.decision === "PROCESS");
-  if (!q) return alert("Le lead doit être qualifié avec décision PROCESS avant conversion.");
+  const q = db.qualifications.find((x) => x.lead_id === leadId && ["OFFER", "VISIT", "CONVERT_TO_PROJECT"].includes(x.decision));
+  if (!q) return alert("Le lead doit être qualifié avec décision OFFER/VISIT/CONVERT_TO_PROJECT avant conversion.");
   byId("project-lead-select").value = leadId;
   document.querySelector('[data-screen="projects"]').click();
 }
