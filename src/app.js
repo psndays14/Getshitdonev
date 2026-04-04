@@ -1,4 +1,7 @@
 const DB_KEY = "zaf_bat_os_v1";
+const APP_VERSION = "v1.0.2";
+const APP_UPDATED_AT = "2026-04-04";
+
 
 const seedData = {
   leads: [
@@ -25,6 +28,7 @@ let uiState = { leadEditingId: null, projectEditingId: null, qualificationEditin
 init();
 
 function init() {
+  byId("build-info").textContent = `Build ${APP_VERSION} — updated ${APP_UPDATED_AT}`;
   bindNav();
   renderForms();
   bindBackupActions();

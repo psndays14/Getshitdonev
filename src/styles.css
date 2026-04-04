@@ -109,3 +109,5 @@ th { color: var(--muted); font-weight: 500; }
   .grid-form { grid-template-columns: repeat(2, minmax(150px, 1fr)); }
   .cards { grid-template-columns: repeat(2, minmax(150px, 1fr)); }
 }
+
+.build { margin: 0; color: var(--muted); font-size: 11px; opacity: 0.85; }

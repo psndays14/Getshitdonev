@@ -42,3 +42,8 @@ Aucune dépendance.
 - Pas d'authentification / rôles utilisateurs
 - Pas de backend / API
 - Pas d'envoi email / PDF serveur (impression navigateur uniquement)
+
+
+## Version courante UI
+- Build: `v1.0.2`
+- Updated: `2026-04-04`
