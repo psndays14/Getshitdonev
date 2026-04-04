@@ -28,7 +28,8 @@ let uiState = { leadEditingId: null, projectEditingId: null, qualificationEditin
 init();
 
 function init() {
-  byId("build-info").textContent = `Build ${APP_VERSION} — updated ${APP_UPDATED_AT}`;
+  const buildNode = byId("build-info");
+  if (buildNode) buildNode.textContent = `Build ${APP_VERSION} — updated ${APP_UPDATED_AT}`;
   bindNav();
   renderForms();
   bindBackupActions();
@@ -67,8 +68,15 @@ function loadDB() {
   }
 }
 
+function deepClone(obj) {
+  try {
+    if (typeof structuredClone === "function") return structuredClone(obj);
+  } catch {}
+  return JSON.parse(JSON.stringify(obj));
+}
+
 function hydrateSeed() {
-  const seeded = structuredClone(seedData);
+  const seeded = deepClone(seedData);
   const leadForQual = seeded.leads[1]?.id || null;
   const leadForProject = seeded.leads[0]?.id || null;
   seeded.qualifications[0].lead_id = leadForQual;
@@ -227,6 +235,7 @@ function onLeadSubmit(e) {
   e.target.reset();
   uiState.leadEditingId = null;
   renderAll();
+  toast("Lead enregistré.");
 }
 
 function onQualificationSubmit(e) {
@@ -259,6 +268,7 @@ function onQualificationSubmit(e) {
   e.target.reset();
   uiState.qualificationEditingId = null;
   renderAll();
+  toast("Qualification enregistrée.");
 }
 
 function onProjectSubmit(e) {
@@ -288,6 +298,7 @@ function onProjectSubmit(e) {
   e.target.reset();
   uiState.projectEditingId = null;
   renderAll();
+  toast("Projet enregistré.");
 }
 
 function onReportSubmit(e) {
@@ -306,6 +317,7 @@ function onReportSubmit(e) {
   persist();
   e.target.reset();
   renderAll();
+  toast("Report créé.");
 }
 
 function onGenerateDocument(e) {
@@ -508,6 +520,7 @@ function deleteLead(id) {
   db.qualifications = db.qualifications.filter((q) => q.lead_id !== id);
   persist();
   renderAll();
+  toast("Lead supprimé.");
 }
 
 function prefillQualification(leadId) {
@@ -528,6 +541,7 @@ function deleteQualification(id) {
   db.qualifications = db.qualifications.filter((q) => q.id !== id);
   persist();
   renderAll();
+  toast("Qualification supprimée.");
 }
 
 function convertLeadToProject(leadId) {
@@ -551,6 +565,7 @@ function deleteProject(id) {
   db.reports = db.reports.map((r) => ({ ...r, project_ids: r.project_ids.filter((pid) => pid !== id) }));
   persist();
   renderAll();
+  toast("Projet supprimé.");
 }
 
 function deleteReport(id) {
@@ -558,10 +573,25 @@ function deleteReport(id) {
   db.reports = db.reports.filter((r) => r.id !== id);
   persist();
   renderAll();
+  toast("Report supprimé.");
 }
 
 function field(labelText, input) {
   return `<label>${labelText}${input}</label>`;
+}
+
+function toast(message) {
+  let node = document.getElementById("toast");
+  if (!node) {
+    node = document.createElement("div");
+    node.id = "toast";
+    node.style.cssText = "position:fixed;right:16px;bottom:16px;padding:10px 12px;background:#10192b;color:#eaf0ff;border:1px solid rgba(255,255,255,.2);border-radius:10px;z-index:9999;font-size:12px;";
+    document.body.appendChild(node);
+  }
+  node.textContent = message;
+  node.style.display = "block";
+  clearTimeout(window.__zafToastTimer);
+  window.__zafToastTimer = setTimeout(() => { node.style.display = "none"; }, 1800);
 }
 
 function byId(id) {
