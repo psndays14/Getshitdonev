@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>ZAF BAT · Conformité</title>
+<link rel="icon" type="image/svg+xml" href="assets/zafbat-logo.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="zafbat.css">
+<link rel="stylesheet" href="zafbat-inner.css">
+
+<style>
+/* IVORY MODE for Conformité */
+:root{--danger:#B53A2B;--danger-deep:#8a2a1f;--danger-bg:#FBEAE6}
+
+/* Section base, ivory */
+.comp-section{background:var(--ivory)!important;color:var(--charcoal);padding:100px 0;border-top:1px solid rgba(20,20,20,.06)}
+.comp-section:nth-child(odd),.comp-section:nth-child(even){background:var(--ivory)!important}
+
+/* Phase tag */
+.comp-section .phase-tag{color:var(--gold)!important;font-family:var(--font-serif);font-style:italic;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;font-weight:600}
+
+/* Law number, ivory mode */
+.comp-section .comp-law-num{
+  background:linear-gradient(135deg,rgba(20,20,20,.85),rgba(20,20,20,.55))!important;
+  -webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important;
+}
+.comp-section .comp-law-name{color:var(--charcoal)!important}
+.comp-section .comp-law-desc{color:#3d3d3a!important}
+
+/* Pills, austere on ivory */
+.comp-section .comp-pill{
+  background:#fff!important;border:1px solid rgba(20,20,20,.12)!important;
+  color:var(--charcoal)!important;border-radius:2px!important;
+  padding:9px 14px!important;letter-spacing:1.2px!important;
+  text-transform:uppercase!important;font-size:10.5px!important;font-weight:600!important;
+  font-family:var(--font-sans)!important;font-style:normal!important
+}
+
+/* Comp item, ivory mode = white card with dark text */
+.comp-section .comp-item{
+  background:#fff!important;border:1px solid rgba(20,20,20,.08)!important;
+  border-radius:4px!important;padding:18px 22px!important;
+  transition:border-color .25s,transform .25s,box-shadow .25s
+}
+.comp-section .comp-item:hover{border-color:rgba(211,163,87,.5)!important;transform:translateY(-2px);box-shadow:0 12px 28px rgba(20,20,20,.05)}
+.comp-section .comp-item-icon{
+  background:#fff!important;border:1px solid rgba(211,163,87,.45)!important;
+  width:38px!important;height:38px!important;border-radius:4px!important
+}
+.comp-section .cii-rom{color:var(--gold);font-family:var(--font-serif);font-style:italic;font-size:13px;font-weight:600;letter-spacing:.5px}
+.comp-section .comp-item-title{color:var(--charcoal)!important;font-family:var(--font-serif)!important;font-size:15px!important;font-weight:600!important}
+.comp-section .comp-item-sub{color:#6a6862!important;font-family:var(--font-serif)!important;font-style:italic!important;font-size:12px!important;font-weight:300!important}
+
+/* RED DANGER, sober article style, Arial 12 */
+.danger-box{
+  background:transparent;
+  border:none;
+  border-top:1px solid var(--danger);
+  border-radius:0;
+  padding:14px 0 0 0;
+  margin-top:24px;
+  position:relative
+}
+.danger-tag{
+  display:block;
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--danger);
+  margin-bottom:8px
+}
+.danger-tag::before{content:none}
+.danger-title{
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:12px;
+  font-weight:700;
+  color:var(--danger-deep);
+  line-height:1.4;
+  margin-bottom:4px;
+  font-style:normal
+}
+.danger-text{
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:12px;
+  font-weight:400;
+  font-style:normal;
+  color:#4a2520;
+  line-height:1.55;
+  margin:0;
+  max-width:540px
+}
+
+/* Red danger comp-item, used inside .comp-visual list */
+.comp-item.danger{
+  background:var(--danger-bg)!important;
+  border:1px solid var(--danger)!important;
+  border-left:4px solid var(--danger)!important
+}
+.comp-item.danger .comp-item-icon{
+  background:var(--danger)!important;border-color:var(--danger)!important
+}
+.comp-item.danger .comp-item-icon .cii-rom,
+.comp-item.danger .comp-item-icon span{color:#fff!important}
+.comp-item.danger .comp-item-title{color:var(--danger-deep)!important}
+.comp-item.danger .comp-item-sub{color:#7a3a30!important}
+
+/* Documents section, ivory */
+#documents{background:#efece5!important;color:var(--charcoal)!important}
+#documents h2{color:var(--charcoal)!important}
+#documents .section-label{color:var(--gold)!important}
+#documents p{color:#3d3d3a!important}
+#documents .doc-badge{background:#fff!important;border:1px solid rgba(20,20,20,.08)!important;color:var(--charcoal)!important}
+#documents .db-name{color:var(--charcoal)!important}
+#documents .db-issuer{color:#6a6862!important}
+#documents .db-valid{color:var(--gold)!important}
+#documents .db-tag{background:rgba(211,163,87,.1)!important;color:var(--gold)!important}
+
+/* "Standard non négociable" stays dark, but the rest is ivory */
+.standard-final{padding:130px 0;background:linear-gradient(180deg,#efece5,var(--ivory));color:var(--charcoal)}
+.standard-final .section-label{color:var(--gold)}
+.standard-final .standard-text{
+  font-family:var(--font-serif);font-size:clamp(22px,2.6vw,34px);font-weight:300;
+  line-height:1.4;color:var(--charcoal);letter-spacing:-.005em;max-width:880px;margin:0 auto
+}
+.standard-final .standard-text em{font-style:italic;background:linear-gradient(90deg,var(--gold-2),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+@media(max-width:768px){
+  .comp-section{padding:64px 0}
+  .danger-box{padding:18px 20px}
+  .danger-title{font-size:16px}
+  .danger-text{font-size:13.5px}
+}
+</style>
+</head>
+<body>
+
+<div id="loader"><div class="loader-inner"><div class="loader-brand">ZAF BAT</div><div class="loader-tagline">Conformité</div></div><div class="loader-line-track"><div class="loader-line-fill" id="loader-fill"></div></div></div>
+<div id="scroll-progress"></div><div id="cur"></div><div id="cur-ring"></div>
+
+<svg width="0" height="0" style="position:absolute;overflow:hidden"><defs>
+  <linearGradient id="zbA" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#f0d890"/><stop offset="45%" stop-color="#D3A357"/><stop offset="100%" stop-color="#9a7a48"/></linearGradient>
+  <linearGradient id="emTL" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2E6A4F"/><stop offset="100%" stop-color="#153C2A"/></linearGradient>
+  <linearGradient id="emTR" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#3E8A67"/><stop offset="100%" stop-color="#1D4C37"/></linearGradient>
+  <linearGradient id="emBL" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#0A1E12"/><stop offset="100%" stop-color="#1A3F28"/></linearGradient>
+  <linearGradient id="emBR" x1="100%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#163D28"/><stop offset="100%" stop-color="#255237"/></linearGradient>
+  <mask id="zbSocket" maskUnits="userSpaceOnUse" x="0" y="-4" width="220" height="208"><rect x="0" y="-4" width="220" height="208" fill="#fff"/><polygon points="110,-2 126,20 110,42 94,20" fill="#000"/></mask>
+</defs></svg>
+
+<nav id="main-nav">
+  <div class="container nav-inner">
+    <a class="logo-mark" href="ZAF BAT.html">
+      <span class="logo-icon-wrap"><svg class="logo-icon" viewBox="0 0 220 200" fill="none" style="overflow:visible"><path fill="url(#zbA)" fill-rule="evenodd" mask="url(#zbSocket)" d="M 45,178 L 45,89.5 Q 45,92 42.5,92 L 30.5,92 Q 28,92 28,89.5 L 28,84 Q 28,11 110,11 Q 192,11 192,84 L 192,89.5 Q 192,92 189.5,92 L 177.5,92 Q 175,92 175,89.5 L 175,178 Z M 63,178 L 63,86.5 Q 63,84 60.5,84 L 48.5,84 Q 46,84 46,81.5 Q 46,29 110,29 Q 174,29 174,81.5 Q 174,84 171.5,84 L 159.5,84 Q 157,84 157,86.5 L 157,178 Z"/></svg></span>
+      <div class="logo-text"><span class="logo-name">ZAF BAT</span><span class="logo-sub">Maîtrise d'Ouvrage</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="Realisations.html">Réalisations</a>
+      <a href="Methodologie.html">Méthode</a>
+      <a href="Audit.html">Audit</a>
+      <a href="Pilotage-Financier.html">Pilotage</a>
+      <a href="Conformite.html" style="color:var(--ivory)">Conformité</a>
+      <a href="Diaspora.html">Diaspora</a>
+      <a href="Equipe.html">Équipe</a>
+      <a href="Contact.html" class="nav-cta">Discussion privée</a>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu">&#9776;</button>
+  </div>
+</nav>
+<nav class="side-menu" id="sideMenu">
+  <div class="side-menu-links">
+    <a href="ZAF BAT.html">Accueil</a>
+    <a href="Realisations.html">Réalisations</a>
+    <a href="Methodologie.html">Méthode</a>
+    <a href="Audit.html">Audit</a>
+    <a href="Pilotage-Financier.html">Pilotage</a>
+    <a href="Conformite.html" class="active">Conformité</a>
+    <a href="Diaspora.html">Diaspora</a>
+    <a href="Equipe.html">Équipe</a>
+    <a href="Contact.html">Contact</a>
+  </div>
+  <div class="side-menu-foot"><a href="https://wa.me/212717380728" target="_blank">WhatsApp →</a></div>
+</nav>
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="page-hero-bg" data-parallax-wrap>
+    <img src="assets/site/Site_Pillars_Palms.jpg" alt="Conformité légale ZAF BAT">
+  </div>
+  <div class="page-hero-content container">
+    <div class="page-breadcrumb hero-enter"><a href="ZAF BAT.html">Accueil</a><span>/</span>Conformité</div>
+    <h1 class="page-h1 hero-enter">Chaque acte, <em>ancré dans la loi.</em></h1>
+    <p class="page-lead hero-enter">Nous ne citons pas les lois pour paraître sérieux. Nous les citons parce que nous les appliquons, article par article, sur chaque mandat.</p>
+    <div class="hero-enter" style="display:flex;gap:14px;flex-wrap:wrap">
+      <a href="#documents" class="btn-gold">Voir les documents →</a>
+      <a href="Contact.html" class="btn-outline">Poser une question</a>
+    </div>
+  </div>
+</section>
+
+<!-- DOCUMENTS HERO, ivory -->
+<section id="documents" style="padding:100px 0">
+  <div class="container">
+    <div class="doc-hero-grid">
+      <div>
+        <div class="section-label" data-anim="up">Nos certifications</div>
+        <h2 style="font-family:var(--font-serif);font-size:clamp(26px,3vw,40px);font-weight:600;margin:14px 0 24px;line-height:1.1" data-anim="up">Affiliations &amp; accréditations actives</h2>
+        <p style="font-size:14px;line-height:1.85;margin-bottom:32px" data-anim="up">Chaque document est vérifiable auprès de l'organisme émetteur. Nous fournissons les copies certifiées sur demande dans les 48 heures.</p>
+        <div class="doc-stack" data-anim="up">
+          <div class="doc-badge"><div class="db-tag">FNBTP</div><div><div class="db-name">Fédération Nationale du Bâtiment et des Travaux Publics</div><div class="db-issuer">Membre actif, Casablanca</div></div><div class="db-valid">2026</div></div>
+          <div class="doc-badge"><div class="db-tag">CGEM</div><div><div class="db-name">Confédération Générale des Entreprises du Maroc</div><div class="db-issuer">Membre entreprise</div></div><div class="db-valid">2026</div></div>
+          <div class="doc-badge"><div class="db-tag">DATRP</div><div><div class="db-name">Direction Architecture, Urbanisme et Patrimoine</div><div class="db-issuer">Enregistrement opérateur MOD</div></div><div class="db-valid">Permanent</div></div>
+          <div class="doc-badge"><div class="db-tag">RC</div><div><div class="db-name">Registre du Commerce, Casablanca</div><div class="db-issuer">SARL au capital de 300 000 MAD</div></div><div class="db-valid">Permanent</div></div>
+          <div class="doc-badge"><div class="db-tag">IF</div><div><div class="db-name">Identifiant Fiscal DGI</div><div class="db-issuer">Direction Générale des Impôts</div></div><div class="db-valid">Actif</div></div>
+        </div>
+      </div>
+      <div data-anim="right">
+        <div style="background:#fff;border:1px solid rgba(20,20,20,.08);border-radius:8px;padding:32px;margin-bottom:16px">
+          <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;font-weight:600">Couverture assurantielle</div>
+          <div class="doc-stack">
+            <div class="doc-badge"><div class="db-tag">DEC</div><div><div class="db-name">Garantie décennale, Loi 59-13</div><div class="db-issuer">Wafa Assurance</div></div><div class="db-valid">10 ans</div></div>
+            <div class="doc-badge"><div class="db-tag">RC PRO</div><div><div class="db-name">Responsabilité civile professionnelle</div><div class="db-issuer">Allianz Maroc</div></div><div class="db-valid">2026</div></div>
+            <div class="doc-badge"><div class="db-tag">BIENNE</div><div><div class="db-name">Garantie biennale bon fonctionnement</div><div class="db-issuer">Éléments dissociables, 2 ans</div></div><div class="db-valid">2 ans</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOI 59-13 -->
+<section class="comp-section">
+  <div class="container">
+    <div class="comp-grid">
+      <div>
+        <div class="phase-tag" data-anim="up">Garantie décennale</div>
+        <div class="comp-law-num" data-anim="up">59-13</div>
+        <h3 class="comp-law-name" data-anim="up">Responsabilité décennale des constructeurs</h3>
+        <p class="comp-law-desc" data-anim="up">La Loi 59-13 impose une garantie de dix ans sur tout désordre affectant la solidité de l'ouvrage ou le rendant impropre à sa destination. ZAF BAT intègre cette garantie dans chaque contrat d'entreprise.</p>
+        <div class="comp-pills" data-anim="up">
+          <div class="comp-pill">Solidité de l'ouvrage</div>
+          <div class="comp-pill">Étanchéité</div>
+          <div class="comp-pill">Fondations</div>
+          <div class="comp-pill">Structure béton</div>
+          <div class="comp-pill">10 ans fermes</div>
+        </div>
+
+        <div class="danger-box" data-anim="up">
+          <span class="danger-tag">Attention, sans décennale</span>
+          <div class="danger-title">Aucun recours après réception</div>
+          <p class="danger-text">Une fissure structurelle apparaît trois ans après la livraison. Sans attestation décennale Loi 59-13 active, la facture, parfois six chiffres, est intégralement à votre charge.</p>
+        </div>
+      </div>
+      <div class="comp-visual" data-anim="right">
+        <div class="comp-item"><div class="comp-item-icon"><span class="cii-rom">I</span></div><div><div class="comp-item-title">Opposabilité légale</div><div class="comp-item-sub">Article 769 à 775 du DOC</div></div></div>
+        <div class="comp-item"><div class="comp-item-icon"><span class="cii-rom">II</span></div><div><div class="comp-item-title">Attestation Wafa Assurance</div><div class="comp-item-sub">Remise à la réception de l'ouvrage</div></div></div>
+        <div class="comp-item"><div class="comp-item-icon"><span class="cii-rom">III</span></div><div><div class="comp-item-title">Couverture de l'ouvrage bâti</div><div class="comp-item-sub">Maçonnerie, structure, toiture</div></div></div>
+        <div class="comp-item"><div class="comp-item-icon"><span class="cii-rom">IV</span></div><div><div class="comp-item-title">Intervention &lt; 72h</div><div class="comp-item-sub">Sur signalement de désordre</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOI 53-05 -->
+<section class="comp-section">
+  <div class="container">
+    <div class="comp-grid" style="direction:rtl">
+      <div style="direction:ltr" data-anim="right">
+        <div class="comp-visual">
+          <div class="comp-item"><div class="comp-item-icon"><span class="cii-rom">I</span></div><div><div class="comp-item-title">Signature électronique certifiée</div><div class="comp-item-sub">Chaque avenant, chaque décaissement</div></div></div>
+          <div class="comp-item"><div class="comp-item-icon"><span class="cii-rom">II</span></div><div><div class="comp-item-title">Chiffrement bout-en-bout</div><div class="comp-item-sub">Archivage sécurisé 10 ans</div></div></div>
+          <div class="comp-item"><div class="comp-item-icon"><span class="cii-rom">III</span></div><div><div class="comp-item-title">Valeur légale depuis l'étranger</div><div class="comp-item-sub">Reconnu en Europe et au Maroc</div></div></div>
+          <div class="comp-item"><div class="comp-item-icon"><span class="cii-rom">IV</span></div><div><div class="comp-item-title">Contrat bilingue</div><div class="comp-item-sub">Français · Arabe · Revu par notaire</div></div></div>
+        </div>
+      </div>
+      <div style="direction:ltr">
+        <div class="phase-tag" data-anim="up">Signature &amp; échanges numériques</div>
+        <div class="comp-law-num" data-anim="up">53-05</div>
+        <h3 class="comp-law-name" data-anim="up">Échanges électroniques sécurisés</h3>
+        <p class="comp-law-desc" data-anim="up">La Loi 53-05 relative à l'échange électronique de données juridiques confère pleine valeur légale à nos contrats signés à distance. Vous signez depuis Bruxelles ou Dubaï avec la même force qu'une signature devant notaire.</p>
+        <div class="comp-pills" data-anim="up">
+          <div class="comp-pill">Signature distance</div>
+          <div class="comp-pill">Valeur notariée</div>
+          <div class="comp-pill">Archivage 10 ans</div>
+          <div class="comp-pill">Bilingue FR-AR</div>
+        </div>
+
+        <div class="danger-box" data-anim="up">
+          <span class="danger-tag">Attention, sans signature conforme</span>
+          <div class="danger-title">Contrat contestable, avenants invalides</div>
+          <p class="danger-text">Un PDF signé par capture d'écran ou par e-mail n'a pas la force légale d'une signature conforme Loi 53-05. En cas de litige, votre avenant peut être déclaré nul, et le décaissement irrecouvrable.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOI 12-90 -->
+<section class="comp-section">
+  <div class="container">
+    <div class="comp-grid">
+      <div>
+        <div class="phase-tag" data-anim="up">Urbanisme &amp; permis</div>
+        <div class="comp-law-num" data-anim="up">12-90</div>
+        <h3 class="comp-law-name" data-anim="up">Urbanisme marocain</h3>
+        <p class="comp-law-desc" data-anim="up">Chaque projet commence par la vérification du Plan d'Aménagement, du coefficient d'occupation et des hauteurs autorisées. Nous déposons le dossier de permis de construire complet, conformément aux exigences de la Loi 12-90.</p>
+        <div class="comp-pills" data-anim="up">
+          <div class="comp-pill">Plan d'Aménagement</div>
+          <div class="comp-pill">Permis de construire</div>
+          <div class="comp-pill">Certificat de conformité</div>
+          <div class="comp-pill">Permis d'habiter</div>
+        </div>
+
+        <div class="danger-box" data-anim="up">
+          <span class="danger-tag">Danger, sans permis valide</span>
+          <div class="danger-title">Construction non régularisable, démolition possible</div>
+          <p class="danger-text">Un dépassement de hauteur ou de COS, même de quelques centimètres, peut entraîner refus du certificat de conformité, blocage du permis d'habiter, voire arrêté municipal de démolition partielle. Aucun délai prescrit ne couvre ce risque.</p>
+        </div>
+      </div>
+      <div class="comp-visual" data-anim="right">
+        <div class="comp-item"><div class="comp-item-icon"><span class="cii-rom">I</span></div><div><div class="comp-item-title">Vérification Plan d'Aménagement</div><div class="comp-item-sub">Commune, Agence Urbaine</div></div></div>
+        <div class="comp-item"><div class="comp-item-icon"><span class="cii-rom">II</span></div><div><div class="comp-item-title">Dépôt permis de construire</div><div class="comp-item-sub">Délai légal 60 jours</div></div></div>
+        <div class="comp-item"><div class="comp-item-icon"><span class="cii-rom">III</span></div><div><div class="comp-item-title">Permis d'habiter obtenu</div><div class="comp-item-sub">Avant toute remise de clés</div></div></div>
+        <div class="comp-item"><div class="comp-item-icon"><span class="cii-rom">IV</span></div><div><div class="comp-item-title">Plans de récolement</div><div class="comp-item-sub">Tel que construit, archivés</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LE STANDARD NON NEGOCIABLE, ivory close -->
+<section class="standard-final">
+  <div class="container" style="text-align:center;max-width:920px">
+    <div class="section-label" style="justify-content:center;margin-bottom:28px" data-anim="up">Le standard non négociable</div>
+    <p class="standard-text" data-anim="up">
+      Citer un article de loi est facile. <em>L'appliquer</em> exige une discipline quotidienne.<br><br>
+      Décennale Loi 59-13, signature électronique Loi 53-05, Conservation Foncière, mandat-cadre notarié : nous citons ces textes parce qu'ils <em>structurent</em> notre méthode, pas parce qu'ils décorent notre site.
+    </p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-band">
+  <div class="cta-band-inner container">
+    <h2 data-anim="up">Un cadre légal qui vous <em>protège, pas nous.</em></h2>
+    <p data-anim="up">Chaque contrat ZAF BAT est rédigé dans votre intérêt, revu par notaire, signé à distance. Mandat révocable à tout moment.</p>
+    <div class="cta-band-btns" data-anim="up">
+      <a href="Contact.html" class="btn-gold">Demander un exemplaire →</a>
+      <a href="Methodologie.html" class="btn-outline">Notre méthodologie</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container footer-inner">
+    <a class="logo-mark" href="ZAF BAT.html"><span class="logo-icon-wrap"><svg class="logo-icon" viewBox="0 0 220 200" fill="none" style="overflow:visible"><path fill="url(#zbA)" fill-rule="evenodd" mask="url(#zbSocket)" d="M 45,178 L 45,89.5 Q 45,92 42.5,92 L 30.5,92 Q 28,92 28,89.5 L 28,84 Q 28,11 110,11 Q 192,11 192,84 L 192,89.5 Q 192,92 189.5,92 L 177.5,92 Q 175,92 175,89.5 L 175,178 Z M 63,178 L 63,86.5 Q 63,84 60.5,84 L 48.5,84 Q 46,84 46,81.5 Q 46,29 110,29 Q 174,29 174,81.5 Q 174,84 171.5,84 L 159.5,84 Q 157,84 157,86.5 L 157,178 Z"/></svg></span><div class="logo-text"><span class="logo-name">ZAF BAT</span><span class="logo-sub">Maîtrise d'Ouvrage</span></div></a>
+    <div style="text-align:center"><div class="footer-cities">Casablanca · Rabat · Salé · Marrakech · Tanger</div><div class="footer-tagline">Construire loin, vivre serein.</div></div>
+    <div class="footer-copy"><div class="footer-links" style="justify-content:flex-end;margin-bottom:6px"><a href="Conformite.html">Conformité</a><a href="Contact.html">Contact</a></div>© 2026 ZAF BAT SARL · RC Casablanca</div>
+  </div>
+</footer>
+<a id="wa-btn" href="https://wa.me/212717380728" target="_blank" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.116.554 4.103 1.524 5.83L.057 23.62a.5.5 0 0 0 .62.62l5.79-1.467A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 0 1-5.016-1.38l-.36-.214-3.733.947.964-3.64-.234-.376A9.818 9.818 0 0 1 12 2.182c5.424 0 9.818 4.394 9.818 9.818 0 5.425-4.394 9.818-9.818 9.818z"/></svg></a>
+<nav class="mob-bar"><a class="mob-wa" href="https://wa.me/212717380728" target="_blank">WhatsApp</a><a class="mob-call" href="tel:+212717380728">Appeler</a><a class="mob-call" href="Contact.html">Contact</a></nav>
+
+<script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+<script src="https://unpkg.com/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://unpkg.com/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="zafbat-engine.js"></script>
+<script>ZAF2.boot();</script>
+</body>
+</html>
