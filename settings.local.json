@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "WebSearch",
-      "Bash(grep -v \":0$\")"
-    ]
-  }
-}
