@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>ZAF BAT · Audit Préliminaire</title>
+<link rel="icon" type="image/svg+xml" href="assets/zafbat-logo.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="zafbat.css">
+<link rel="stylesheet" href="zafbat-inner.css">
+<style>
+.audit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(211,163,87,.06);border-radius:16px;overflow:hidden;margin-top:48px}
+.audit-col{background:var(--charcoal);padding:36px 28px}
+.audit-col-title{font-family:var(--font-serif);font-size:11px;font-style:italic;letter-spacing:2px;color:rgba(211,163,87,.5);margin-bottom:24px}
+.audit-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid rgba(247,245,240,.04)}
+.audit-item:last-child{border-bottom:none}
+.audit-check{color:var(--gold);font-size:14px;flex-shrink:0;margin-top:1px}
+.audit-item-text{font-family:var(--font-serif);font-size:14px;font-weight:300;color:rgba(247,245,240,.95);line-height:1.5}
+.engage-box{background:rgba(211,163,87,.04);border:1px solid rgba(211,163,87,.15);border-radius:16px;padding:40px;margin-top:48px;max-width:800px;margin-left:auto;margin-right:auto}
+.engage-box-title{font-family:var(--font-serif);font-size:11px;letter-spacing:3px;color:rgba(211,163,87,.5);margin-bottom:28px;font-style:italic}
+.engage-row{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:14px 0;border-bottom:1px solid rgba(211,163,87,.08)}
+.engage-row:last-child{border-bottom:none}
+.engage-label{font-family:var(--font-serif);font-size:14px;font-weight:300;color:rgba(247,245,240,.96)}
+.engage-val{font-family:var(--font-serif);font-size:14px;font-weight:600;color:var(--ivory);text-align:right}
+.engage-val em{color:var(--gold);font-style:normal}
+.signers{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:40px}
+.signer-card{background:rgba(247,245,240,.03);border:1px solid rgba(247,245,240,.06);border-radius:14px;padding:28px;transition:border-color .3s}
+.signer-card:hover{border-color:rgba(211,163,87,.15)}
+.signer-role{font-family:var(--font-serif);font-style:italic;font-size:11px;letter-spacing:1.5px;color:rgba(211,163,87,.5);margin-bottom:10px}
+.signer-name{font-family:var(--font-serif);font-size:22px;font-weight:600;color:var(--ivory);margin-bottom:8px}
+.signer-cred{font-family:var(--font-serif);font-size:13px;font-weight:300;color:rgba(247,245,240,.95);margin-bottom:4px}
+.order-form-wrap{background:var(--ivory);padding:80px 56px;color:var(--charcoal)}
+.order-price{font-family:var(--font-serif);font-size:clamp(56px,10vw,110px);font-weight:300;font-style:italic;background:linear-gradient(135deg,#8a6b30,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:8px}
+.order-price-sub{font-family:var(--font-serif);font-style:italic;font-size:14px;color:var(--stone);margin-bottom:40px}
+@media(max-width:960px){.audit-grid{grid-template-columns:1fr}.signers{grid-template-columns:1fr}}
+@media(max-width:768px){.audit-col{padding:28px 22px}.engage-box{padding:32px 24px}.engage-row{flex-direction:column;align-items:flex-start;gap:6px}.engage-label{font-size:15px!important}.engage-val{font-size:15px!important;text-align:left}.order-form-wrap{padding:48px 24px}.signer-card{padding:24px}.signer-name{font-size:20px}}
+@media(max-width:768px){
+  #commander .container>div{grid-template-columns:1fr!important}
+  #commander [style*="padding:60px 48px"]{padding:40px 24px!important}
+  #commander [style*="padding:60px 48px 60px 0"]{padding:40px 4px 40px 0!important}
+  [style*="grid-template-columns:1fr 1.4fr"]{grid-template-columns:1fr!important;gap:36px!important}
+}
+</style>
+</head>
+<body>
+
+<div id="loader"><div class="loader-inner"><div class="loader-brand">ZAF BAT</div><div class="loader-tagline">Audit Préliminaire</div></div></div>
+<div id="scroll-progress"></div>
+
+<svg width="0" height="0" style="position:absolute;overflow:hidden"><defs>
+  <linearGradient id="zbA" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#f0d890"/><stop offset="45%" stop-color="#D3A357"/><stop offset="100%" stop-color="#9a7a48"/></linearGradient>
+  <linearGradient id="emTL" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2E6A4F"/><stop offset="100%" stop-color="#153C2A"/></linearGradient>
+  <linearGradient id="emTR" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#3E8A67"/><stop offset="100%" stop-color="#1D4C37"/></linearGradient>
+  <linearGradient id="emBL" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#0A1E12"/><stop offset="100%" stop-color="#1A3F28"/></linearGradient>
+  <linearGradient id="emBR" x1="100%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#163D28"/><stop offset="100%" stop-color="#255237"/></linearGradient>
+  <mask id="zbSocket" maskUnits="userSpaceOnUse" x="0" y="-4" width="220" height="208"><rect x="0" y="-4" width="220" height="208" fill="#fff"/><polygon points="110,-2 126,20 110,42 94,20" fill="#000"/></mask>
+</defs></svg>
+
+<nav id="main-nav">
+  <div class="container nav-inner">
+    <a class="logo-mark" href="ZAF BAT.html">
+      <span class="logo-icon-wrap"><svg class="logo-icon" viewBox="0 0 220 200" fill="none" style="overflow:visible"><path fill="url(#zbA)" fill-rule="evenodd" mask="url(#zbSocket)" d="M 45,178 L 45,89.5 Q 45,92 42.5,92 L 30.5,92 Q 28,92 28,89.5 L 28,84 Q 28,11 110,11 Q 192,11 192,84 L 192,89.5 Q 192,92 189.5,92 L 177.5,92 Q 175,92 175,89.5 L 175,178 Z M 63,178 L 63,86.5 Q 63,84 60.5,84 L 48.5,84 Q 46,84 46,81.5 Q 46,29 110,29 Q 174,29 174,81.5 Q 174,84 171.5,84 L 159.5,84 Q 157,84 157,86.5 L 157,178 Z"/></svg></span>
+      <div class="logo-text"><span class="logo-name">ZAF BAT</span><span class="logo-sub">Maîtrise d'Ouvrage</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="Realisations.html">Réalisations</a>
+      <a href="Methodologie.html">Méthode</a>
+      <a href="Audit.html" style="color:var(--ivory)">Audit</a>
+      <a href="Pilotage-Financier.html">Pilotage</a>
+      <a href="Conformite.html">Conformité</a>
+      <a href="Diaspora.html">Diaspora</a>
+      <a href="Equipe.html">Équipe</a>
+      <a href="Contact.html" class="nav-cta">Discussion privée</a>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu">&#9776;</button>
+  </div>
+</nav>
+<nav class="side-menu" id="sideMenu">
+  <div class="side-menu-links">
+    <a href="ZAF BAT.html">Accueil</a>
+    <a href="Realisations.html">Réalisations</a>
+    <a href="Methodologie.html">Méthode</a>
+    <a href="Audit.html" class="active">Audit</a>
+    <a href="Pilotage-Financier.html">Pilotage</a>
+    <a href="Conformite.html">Conformité</a>
+    <a href="Diaspora.html">Diaspora</a>
+    <a href="Equipe.html">Équipe</a>
+    <a href="Contact.html">Contact</a>
+  </div>
+  <div class="side-menu-foot"><a href="https://wa.me/212717380728" target="_blank">WhatsApp →</a></div>
+</nav>
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="page-hero-bg" data-parallax-wrap>
+    <img src="assets/site/Foundation_Walls_Angle.jpg" alt="Audit préliminaire ZAF BAT">
+  </div>
+  <div class="page-hero-content container">
+    <div class="page-breadcrumb hero-enter"><a href="ZAF BAT.html">Accueil</a><span>/</span>Audit Préliminaire</div>
+    <h1 class="page-h1 hero-enter">L'audit que tout maître d'ouvrage devrait recevoir <em>avant de signer quoi que ce soit.</em></h1>
+    <p class="page-lead hero-enter">20 points. 7 jours ouvrés. 4 500 MAD HT, déductibles du mandat. Signé conjointement par l'ingénieur civil et l'architecte CNOA partenaire.</p>
+    <div class="hero-enter" style="display:flex;gap:14px;flex-wrap:wrap">
+      <a href="#commander" class="btn-gold">Commander l'audit →</a>
+      <a href="#contenu" class="btn-outline">Voir les 20 points</a>
+    </div>
+  </div>
+</section>
+
+<!-- 20 POINTS -->
+<section style="padding:100px 0;background:var(--charcoal)" id="contenu">
+  <div class="container">
+    <div class="section-label" data-anim="up">Ce que contient le rapport</div>
+    <h2 style="font-family:var(--font-serif);font-size:clamp(28px,3.5vw,48px);font-weight:600;color:var(--ivory);margin-top:14px;line-height:1.1;max-width:640px" data-anim="up">Vingt points techniques, juridiques, financiers.</h2>
+    <div class="audit-grid">
+      <div class="audit-col" data-anim="up">
+        <div class="audit-col-title">Volet technique</div>
+        <div class="audit-item"><span class="audit-check">✓</span><span class="audit-item-text">État du terrain, topographie, accès, raccordements</span></div>
+        <div class="audit-item"><span class="audit-check">✓</span><span class="audit-item-text">Analyse géotechnique préliminaire</span></div>
+        <div class="audit-item"><span class="audit-check">✓</span><span class="audit-item-text">Faisabilité architecturale</span></div>
+        <div class="audit-item"><span class="audit-check">✓</span><span class="audit-item-text">Estimation des fondations</span></div>
+        <div class="audit-item"><span class="audit-check">✓</span><span class="audit-item-text">Réseaux disponibles, eau, électricité, assainissement</span></div>
+        <div class="audit-item"><span class="audit-check">✓</span><span class="audit-item-text">Risques sismiques, zonage RPS 2011</span></div>
+        <div class="audit-item"><span class="audit-check">✓</span><span class="audit-item-text">Estimation des consommations énergétiques</span></div>
+      </div>
+      <div class="audit-col" data-anim="up" style="--delay:.1s">
+        <div class="audit-col-title">Volet juridique</div>
+        <div class="audit-item"><span class="audit-check">✓</span><span class="audit-item-text">Titre foncier vérifié, extrait certifié Conservation Foncière</span></div>
+        <div class="audit-item"><span class="audit-check">✓</span><span class="audit-item-text">Conformité Plan d'Aménagement, COS, hauteurs, retraits</span></div>
+        <div class="audit-item"><span class="audit-check">✓</span><span class="audit-item-text">Identification des servitudes</span></div>
+        <div class="audit-item"><span class="audit-check">✓</span><span class="audit-item-text">Vérification de la conformité Loi 12-90</span></div>
+        <div class="audit-item"><span class="audit-check">✓</span><span class="audit-item-text">Régime de propriété, TF, melkia, terre collective</span></div>
+        <div class="audit-item"><span class="audit-check">✓</span><span class="audit-item-text">Analyse fiscale, TVA, IR foncier, droits d'enregistrement</span></div>
+      </div>
+      <div class="audit-col" data-anim="up" style="--delay:.2s">
+        <div class="audit-col-title">Volet financier</div>
+        <div class="audit-item"><span class="audit-check">✓</span><span class="audit-item-text">Estimation budgétaire en 3 scénarios, P10 · P50 · P90</span></div>
+        <div class="audit-item"><span class="audit-check">✓</span><span class="audit-item-text">Phasage budgétaire mensualisé</span></div>
+        <div class="audit-item"><span class="audit-check">✓</span><span class="audit-item-text">Calibrage BFR projet</span></div>
+        <div class="audit-item"><span class="audit-check">✓</span><span class="audit-item-text">Analyse des coûts cachés, raccordements, taxes, honoraires</span></div>
+        <div class="audit-item"><span class="audit-check">✓</span><span class="audit-item-text">Calendrier de décaissements</span></div>
+        <div class="audit-item"><span class="audit-check">✓</span><span class="audit-item-text">Marges de prudence recommandées</span></div>
+        <div class="audit-item"><span class="audit-check">✓</span><span class="audit-item-text">Cartographie des risques techniques, juridiques, fiscaux</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ENGAGEMENT -->
+<section style="padding:100px 0;background:linear-gradient(180deg,var(--charcoal),#0d1a12)">
+  <div class="container">
+    <div class="section-label" data-anim="up">L'engagement</div>
+    <h2 style="font-family:var(--font-serif);font-size:clamp(26px,3.2vw,42px);font-weight:600;color:var(--ivory);margin-top:14px;line-height:1.1" data-anim="up">Contractualisé. Opposable. Remboursé.</h2>
+    <div class="engage-box" data-anim="up">
+      <div class="engage-box-title">Engagement contractuel ZAF BAT, Audit Préliminaire · Article 12</div>
+      <div class="engage-row"><span class="engage-label">Délai garanti</span><span class="engage-val"><em>7 jours ouvrés</em> depuis paiement</span></div>
+      <div class="engage-row"><span class="engage-label">Livrable garanti</span><span class="engage-val">Rapport relié 20 pages, signé en double</span></div>
+      <div class="engage-row"><span class="engage-label">Remboursement</span><span class="engage-val"><em>100% remboursé</em> si dépassement sans cause externe</span></div>
+      <div class="engage-row"><span class="engage-label">Propriété</span><span class="engage-val">Le rapport vous appartient, transférable</span></div>
+      <div class="engage-row"><span class="engage-label">Déductibilité</span><span class="engage-val"><em>100% déductible</em> si mandat signé</span></div>
+      <div class="engage-row"><span class="engage-label">Confidentialité</span><span class="engage-val">Aucune donnée transmise à un tiers</span></div>
+    </div>
+    <p style="font-family:var(--font-serif);font-style:italic;font-size:14px;color:rgba(247,245,240,.96);text-align:center;margin-top:20px;line-height:1.7">Le rapport, s'il est livré, vous appartient. Vous restez libre de l'utiliser avec un autre prestataire.</p>
+  </div>
+</section>
+
+<!-- SIGNATAIRES -->
+<section style="padding:100px 0;background:linear-gradient(180deg,#0d1a12,var(--charcoal))">
+  <div class="container">
+    <div class="section-label" data-anim="up">Qui le signe</div>
+    <h2 style="font-family:var(--font-serif);font-size:clamp(26px,3.2vw,42px);font-weight:600;color:var(--ivory);margin-top:14px;line-height:1.1;margin-bottom:8px" data-anim="up">Deux signatures. Deux responsabilités.</h2>
+    <p style="font-family:var(--font-serif);font-size:15px;font-weight:300;color:rgba(247,245,240,.96);line-height:1.8;margin-bottom:0;max-width:600px" data-anim="up">Notre signature engage notre responsabilité professionnelle. Chaque conclusion est appuyée par un document source cité en annexe.</p>
+    <div class="signers">
+      <div class="signer-card" data-anim="up">
+        <div class="signer-role">Co-fondateur · Directeur Général</div>
+        <div class="signer-name">Ahmed Yassine Fliyou</div>
+        <div class="signer-cred">Master Finance &amp; Banking</div>
+        <div class="signer-cred">Pilotage financier · Séquestre notarial</div>
+        <div style="margin-top:16px;font-family:var(--font-serif);font-size:13px;font-weight:300;color:rgba(247,245,240,.95);line-height:1.65">Responsable des volets financier et juridique du rapport. Signe personnellement chaque section budgétaire et l'analyse de risques.</div>
+      </div>
+      <div class="signer-card" data-anim="up" style="--delay:.1s">
+        <div class="signer-role">Co-fondateur · Directeur des Projets</div>
+        <div class="signer-name">Achraf Zaddoug</div>
+        <div class="signer-cred">Ingénieur Civil · Béton armé · RPS 2011</div>
+        <div class="signer-cred">Supervision technique · FNBTP</div>
+        <div style="margin-top:16px;font-family:var(--font-serif);font-size:13px;font-weight:300;color:rgba(247,245,240,.95);line-height:1.65">Responsable du volet technique. Effectue l'analyse géotechnique préliminaire, évalue la faisabilité structurelle, identifie les risques sismiques.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUDIT AS DISCIPLINE, STRATEGIC FRAMING -->
+<section style="padding:120px 0;background:linear-gradient(180deg,#0d1a12,var(--charcoal));position:relative;overflow:hidden">
+  <div style="position:absolute;top:-150px;left:50%;transform:translateX(-50%);width:560px;height:560px;background:radial-gradient(circle,rgba(211,163,87,.06),transparent 70%);pointer-events:none"></div>
+  <div class="container" style="position:relative;z-index:1;text-align:center;max-width:880px">
+    <div class="section-label" style="justify-content:center;color:var(--gold);margin-bottom:28px" data-anim="up">L'audit comme premier acte</div>
+    <p style="font-family:var(--font-serif);font-size:clamp(22px,2.6vw,34px);font-weight:300;line-height:1.4;color:var(--ivory);letter-spacing:-.005em" data-anim="up">
+      L'audit n'est pas une étape commerciale. C'est <em style="font-style:italic;background:linear-gradient(90deg,#f0d890,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">le premier test</em>, pour vous comme pour nous.<br><br>
+      Vous testez notre rigueur avant de signer un mandat. Nous testons la qualité du dossier avant d'engager notre responsabilité décennale. Aucun des deux ne devrait accepter moins.
+    </p>
+  </div>
+</section>
+
+<!-- POURQUOI ON LE FACTURE -->
+<section style="padding:100px 0;background:var(--ivory);color:var(--charcoal)">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:72px;align-items:start">
+      <div>
+        <div class="section-label" style="justify-content:flex-start" data-anim="up">Pourquoi nous le facturons</div>
+        <div style="font-family:var(--font-serif);font-size:clamp(52px,10vw,100px);font-weight:300;font-style:italic;background:linear-gradient(135deg,var(--gold),#9a7a48);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-top:14px" data-anim="up">4 500</div>
+        <div style="font-family:var(--font-serif);font-style:italic;font-size:15px;color:var(--stone);margin-top:8px" data-anim="up">MAD HT, déductibles du mandat</div>
+      </div>
+      <div data-anim="right">
+        <p style="font-family:var(--font-serif);font-size:18px;font-weight:400;color:var(--charcoal);line-height:1.8;margin-bottom:20px">Parce qu'un audit gratuit n'est pas un audit, c'est une démarche commerciale.</p>
+        <p style="font-family:var(--font-serif);font-size:15px;font-weight:300;color:var(--stone);line-height:1.85;margin-bottom:20px">Les 4 500 MAD que vous engagez garantissent que votre dossier mobilise les mêmes ressources qu'un mandat complet : notre ingénieur civil sur 12 à 16 heures de travail, notre architecte CNOA sur 4 à 6 heures, des consultations payantes auprès de la Conservation Foncière et de l'Agence Urbaine.</p>
+        <p style="font-family:var(--font-serif);font-size:15px;font-weight:300;color:var(--stone);line-height:1.85">Cette somme est intégralement déductible si vous signez le mandat. Et intégralement remboursée si nous dépassons le délai de 7 jours.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ORDER FORM -->
+<section id="commander" style="background:var(--ivory);color:var(--charcoal);padding-bottom:0">
+  <div class="container" style="padding-bottom:0">
+    <div style="display:grid;grid-template-columns:1fr 1fr;min-height:60vh">
+      <div style="padding:60px 48px 60px 0;display:flex;flex-direction:column;justify-content:center" data-anim="up">
+        <div class="section-label" style="justify-content:flex-start;margin-bottom:18px">Commander l'audit</div>
+        <div class="order-price">4 500</div>
+        <div class="order-price-sub">MAD HT · Rapport signé sous 7 jours · Remboursement garanti</div>
+        <p style="font-family:var(--font-serif);font-size:14px;color:var(--stone);line-height:1.8;margin-bottom:28px;max-width:360px">Complétez le formulaire. Yassine vous contacte personnellement sous 24 heures pour confirmer la commande et les modalités de paiement.</p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:12px;align-items:center;font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--stone)"><span style="color:var(--gold)">✓</span>Rapport relié 20 pages, signé</div>
+          <div style="display:flex;gap:12px;align-items:center;font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--stone)"><span style="color:var(--gold)">✓</span>100% déductible du mandat</div>
+          <div style="display:flex;gap:12px;align-items:center;font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--stone)"><span style="color:var(--gold)">✓</span>Remboursement intégral si dépassement</div>
+          <div style="display:flex;gap:12px;align-items:center;font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--stone)"><span style="color:var(--gold)">✓</span>Le rapport vous appartient</div>
+        </div>
+      </div>
+      <div style="background:linear-gradient(135deg,var(--charcoal),#1a1510);padding:60px 48px;display:flex;flex-direction:column;justify-content:center" data-anim="right">
+        <form id="audit-form" novalidate>
+          <div class="form-grid">
+            <div class="form-field"><label for="a-prenom">Prénom *</label><input type="text" id="a-prenom" placeholder="Prénom" required></div>
+            <div class="form-field"><label for="a-nom">Nom</label><input type="text" id="a-nom" placeholder="Nom"></div>
+            <div class="form-field full"><label for="a-email">Email *</label><input type="email" id="a-email" placeholder="email@domaine.com" required></div>
+            <div class="form-field full"><label for="a-tel">WhatsApp / Téléphone</label><input type="tel" id="a-tel" placeholder="+212, +33, +32..."></div>
+            <div class="form-field full"><label for="a-ville">Ville du projet au Maroc</label><input type="text" id="a-ville" placeholder="Casablanca, Rabat, Marrakech..."></div>
+            <div class="form-field full"><label for="a-terrain">Avez-vous déjà le terrain ?</label>
+              <select id="a-terrain">
+                <option value="">Sélectionner...</option>
+                <option>Oui, titre foncier en main</option>
+                <option>Oui, en cours d'acquisition</option>
+                <option>Non, je cherche encore</option>
+              </select>
+            </div>
+            <div class="form-field full"><label for="a-msg">Précisions sur votre projet</label><textarea id="a-msg" rows="3" placeholder="Surface souhaitée, type de villa, questions particulières..."></textarea></div>
+          </div>
+          <div class="form-actions" style="margin-top:16px">
+            <button type="submit" class="btn-submit" id="audit-submit">Commander l'audit, 4 500 MAD HT</button>
+            <p class="form-note" style="color:rgba(247,245,240,.96)">Yassine vous contacte sous 24h pour confirmer · Paiement à la confirmation</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container footer-inner">
+    <a class="logo-mark" href="ZAF BAT.html"><span class="logo-icon-wrap"><svg class="logo-icon" viewBox="0 0 220 200" fill="none" style="overflow:visible"><path fill="url(#zbA)" fill-rule="evenodd" mask="url(#zbSocket)" d="M 45,178 L 45,89.5 Q 45,92 42.5,92 L 30.5,92 Q 28,92 28,89.5 L 28,84 Q 28,11 110,11 Q 192,11 192,84 L 192,89.5 Q 192,92 189.5,92 L 177.5,92 Q 175,92 175,89.5 L 175,178 Z M 63,178 L 63,86.5 Q 63,84 60.5,84 L 48.5,84 Q 46,84 46,81.5 Q 46,29 110,29 Q 174,29 174,81.5 Q 174,84 171.5,84 L 159.5,84 Q 157,84 157,86.5 L 157,178 Z"/></svg></span><div class="logo-text"><span class="logo-name">ZAF BAT</span><span class="logo-sub">Maîtrise d'Ouvrage</span></div></a>
+    <div style="text-align:center"><div class="footer-cities">Casablanca · Rabat · Salé · Marrakech · Tanger</div><div class="footer-tagline">Construire loin, vivre serein.</div></div>
+    <div class="footer-copy"><div class="footer-links" style="justify-content:flex-end;margin-bottom:6px"><a href="Conformite.html">Conformité</a><a href="Contact.html">Contact</a></div>© 2026 ZAF BAT SARL · RC Casablanca</div>
+  </div>
+</footer>
+<a id="wa-btn" href="https://wa.me/212717380728" target="_blank" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.116.554 4.103 1.524 5.83L.057 23.62a.5.5 0 0 0 .62.62l5.79-1.467A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 0 1-5.016-1.38l-.36-.214-3.733.947.964-3.64-.234-.376A9.818 9.818 0 0 1 12 2.182c5.424 0 9.818 4.394 9.818 9.818 0 5.425-4.394 9.818-9.818 9.818z"/></svg></a>
+<nav class="mob-bar"><a class="mob-wa" href="https://wa.me/212717380728" target="_blank">WhatsApp</a><a class="mob-call" href="tel:+212717380728">Appeler</a><a class="mob-call" href="#commander">Commander</a></nav>
+
+<style>
+.form-field label{color:rgba(247,245,240,.95)}
+.form-field input,.form-field select,.form-field textarea{background:rgba(255,255,255,.06);border-color:rgba(247,245,240,.1);color:var(--ivory)}
+.form-field input::placeholder,.form-field textarea::placeholder{color:rgba(247,245,240,.25)}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:rgba(211,163,87,.4);box-shadow:0 0 0 3px rgba(211,163,87,.08)}
+.form-field select option{background:var(--charcoal);color:var(--ivory)}
+@media(max-width:768px){#commander .container>div{grid-template-columns:1fr!important}#commander>div:last-child{padding:40px 24px}}
+</style>
+
+<script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+<script src="https://unpkg.com/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://unpkg.com/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="zafbat-engine.js"></script>
+<script>
+ZAF2.boot({ afterLoad: function(){ ZAF2.parallax('.page-hero-bg img', 16); }});
+document.getElementById('audit-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const btn = document.getElementById('audit-submit');
+  btn.textContent = 'Envoi en cours…'; btn.disabled = true;
+  setTimeout(() => { btn.textContent = '✓ Demande reçue, Yassine vous contacte sous 24h'; btn.style.background='linear-gradient(135deg,#06402B,#042f20)'; }, 1400);
+});
+</script>
+</body>
+</html>
